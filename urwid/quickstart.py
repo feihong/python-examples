@@ -70,11 +70,11 @@ def edit(caption, multiline=False):
 palette = [
     ('body', 'black', 'light gray', 'standout'),
     ('header', 'white','dark red', 'bold'),
-    ('editfocus', 'white', 'dark blue', 'bold'),
+    ('editfocus', 'white', 'light blue', 'bold'),
     ('edit', 'light gray', 'dark blue'),
     ('editcaption', 'black', 'light gray', 'standout'),
     ('button', 'black', 'dark cyan'),
-    ('buttonfocus', 'white', 'dark blue', 'bold'),
+    ('buttonfocus', 'white', 'light blue', 'bold'),
 ]
 
 divider = urwid.Divider()
