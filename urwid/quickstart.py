@@ -19,10 +19,10 @@ def main():
             edit('Long description: ', multiline=True),
         ]),
         checkbox('Create branch for GitHub Pages'),
-        Columns([
+        buttonrow(
+            button('Cancel (ESC)', on_press=exit),
             button('Submit', on_press=submit),
-            button('Exit (ESC)', on_press=exit)
-        ])
+        ),
     ])
     global frame
     frame = urwid.Frame(urwid.AttrMap(lbox, 'body'), header=header)
@@ -49,8 +49,14 @@ def linebox(title, widgets):
 def button(label, on_press=None):
     w = Button(label, on_press=on_press)
     w = AttrMap(w, 'button', 'buttonfocus')
-    w = Padding(w, width=len(label) + 4 )
+    w = Padding(w, width=len(label) + 4)
     return w
+
+def buttonrow(*buttons):
+    return Columns(
+        [(b.width, b) for b in buttons],
+        dividechars=4,
+        focus_column=0)
 
 def checkbox(label):
     w = AttrMap(CheckBox(label), 'button', 'buttonfocus')
@@ -79,7 +85,7 @@ def submit(button):
     counter += 1
     frame.footer = AttrMap(Text('You pressed Submit %s times' % counter), 'header')
 
-def exit(button):
+def exit(button=None):
     raise urwid.ExitMainLoop()
 
 def exit_on_esc(key):
