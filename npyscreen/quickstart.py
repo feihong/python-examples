@@ -13,8 +13,9 @@ class TestApp(npyscreen.NPSApp):
         dt = F.add(TitleDateCombo, name="Date:")
         s  = F.add(TitleSliderPercent, accuracy=0, out_of=12, name="Slider")
         ml = F.add(MultiLineEdit,
-               value = """try typing here!\nMutiline text, press ^R to reformat.\n""",
-               max_height=5, rely=9)
+            name='Multiline edit label',    # will not be displayed
+            value = """try typing here!\nMutiline text, press ^R to reformat.\n""",
+            max_height=5, rely=9)
         self.ms = F.add(TitleSelectOne, max_height=4, value = [1,], name="Pick One",
                 values = ["Option1","Option2","Option3"], scroll_exit=True)
         ms2 = F.add(TitleMultiSelect, max_height =-2, value = [1,], name="Pick Several",
