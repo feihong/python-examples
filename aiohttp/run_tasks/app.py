@@ -27,6 +27,10 @@ async def start_task(request):
     )[name]
     coroutine = fn(app['logger'], count)
     app['current_task'] = asyncio.ensure_future(coroutine)
+    app['current_task_name'] = fn.__name__
+    app['logger'].info('Started task: %s' % fn.__name__)
+    app['current_task'].add_done_callback(
+        lambda f: app['logger'].info('Task %s completed' % app['current_task_name']))
     return web.Response(text='task started')
 
 
@@ -35,6 +39,7 @@ async def stop_task(request):
     current_task = app['current_task']
     if current_task and not current_task.done():
         current_task.cancel()
+        app['logger'].info('Task was cancelled')
         return web.Response(text='task cancelled')
     else:
         return web.Response(text='task not cancelled')
@@ -44,11 +49,17 @@ async def status(request):
     print('Websocket connection opened')
     resp = web.WebSocketResponse()
     await resp.prepare(request)
-    request.app['sockets'].add(resp)
+
+    app = request.app
+    app['sockets'].add(resp)
+
+    if app['current_task'] and not app['current_task'].done():
+        resp.send_str('Current running task: %s' % app['current_task_name'])
+
     async for msg in resp: pass
     await resp.close()
     print('Websocket connection closed')
-    request.app['sockets'].remove(resp)
+    app['sockets'].remove(resp)
     return resp
 
 
