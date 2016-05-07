@@ -16,16 +16,11 @@ async def websocket_handler(request):
 
     request.app['sockets'].add(resp)
 
-    async for msg in resp:
-        if msg.tp == MsgType.text:
-            if msg.data == 'stop':
-                await resp.close()
-            else:
-                print('Received message: %s' % msg.data)
-                resp.send_str('hello')
-        elif msg.tp == MsgType.error:
-            print('Websocket connection closed with exception %s' %
-                resp.exception())
+    for i in range(5):
+        await asyncio.sleep(1.0)
+        resp.send_str(str(i))
+
+    await resp.close()
 
     print('Websocket connection closed')
 

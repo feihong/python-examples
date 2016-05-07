@@ -17,6 +17,5 @@ ws.onmessage = (evt) => {
 }
 
 $('#close-button').on('click', function() {
-  ws.send('stop')
-  // ws.close()
+  ws.close()
 })
