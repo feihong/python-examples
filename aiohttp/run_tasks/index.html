@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<html>
+<head>
+<title>Run Tasks (WebSocket Example)</title>
+</head>
+<body>
+<h1>Run Tasks (WebSocket Example)</h1>
+
+<form>
+  Task: <select name='name'>
+    <option value='random'>Generate random numbers</option>
+    <option value='uuid'>Generate GUIDs</option>
+  </select>
+  Count: <input name='count' value='10'>
+  <button>Start</button>
+</form>
+
+<div id='messages'></div>
+
+<script src='https://code.jquery.com/jquery-2.2.3.min.js'></script>
+<script src='/static/app.js'></script>
+</body>
+</html>
