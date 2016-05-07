@@ -6,8 +6,11 @@ from concurrent.futures import CancelledError
 
 async def index(request):
     app = request.app
+    stop_num = int(request.GET.get('count', 10))
     if app['count_task'] is None or app['count_task'].done():
-        app['count_task'] = asyncio.ensure_future(count(app, 20))
+        print('Counting to %d' % stop_num)
+        app['count_task'] = asyncio.ensure_future(count(app, stop_num))
+
     with (Path(__file__).parent / 'index.html').open('rb') as fp:
         return web.Response(body=fp.read())
 

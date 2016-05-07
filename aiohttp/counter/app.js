@@ -13,7 +13,7 @@ ws.onclose = () => {
 ws.onmessage = (evt) => {
   let p = $('<p></p>')
   p.text(evt.data)
-  $('#content').append(p)
+  $('#messages').append(p)
 }
 
 $('#close-button').on('click', function() {
