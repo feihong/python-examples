@@ -1,5 +1,5 @@
 """
-This web app can start one of a few tasks with a different numerical argument.
+This web app can start one of two tasks with a different numerical argument.
 While a given task is running, it sends messages to all active websockets.
 
 """
@@ -15,16 +15,19 @@ async def index(request):
 
 
 async def start_task(request):
+    app = request.app
+    # Only run one task at a time.
+    if app['current_task'] and not app['current_task'].done():
+        return web.Response(text='task not started')
     name = request.GET['name']
     count = int(request.GET['count'])
     fn = dict(
         random=generate_random_numbers,
         uuid=generate_uuids,
     )[name]
-    app = request.app
     coroutine = fn(app['logger'], count)
-    app['current_operation'] = asyncio.ensure_future(coroutine)
-    return web.Response(text='ok')
+    app['current_task'] = asyncio.ensure_future(coroutine)
+    return web.Response(text='task started')
 
 
 async def status(request):
@@ -65,11 +68,13 @@ class Logger:
             ws.send_str(value)
 
 
+
 def main():
     app = web.Application()
     app['sockets'] = set()
     app['logger'] = Logger(app['sockets'])
-    app['current_operation'] = None
+    app['current_task'] = None
+    app['current_task_name'] = None
     app.router.add_route('GET', '/', index)
     app.router.add_route('GET', '/start-task/', start_task)
     app.router.add_route('GET', '/status/', status)

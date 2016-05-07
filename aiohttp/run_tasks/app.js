@@ -18,5 +18,7 @@ ws.onmessage = (evt) => {
 
 $('form button').on('click', function(evt) {
   evt.preventDefault()
-  $.get('/start-task/?' + $('form').serialize())
+  $.get('/start-task/?' + $('form').serialize(), (data) => {
+    console.log(data)
+  })
 })
