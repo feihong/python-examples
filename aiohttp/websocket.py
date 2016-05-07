@@ -1,6 +1,7 @@
 import asyncio
 from pathlib import Path
 from aiohttp import web, MsgType
+from concurrent.futures import CancelledError
 
 
 async def index(request):
@@ -16,9 +17,12 @@ async def websocket_handler(request):
 
     request.app['sockets'].add(resp)
 
-    for i in range(5):
-        await asyncio.sleep(1.0)
-        resp.send_str(str(i))
+    task = asyncio.ensure_future(count(resp, 10))
+    async for msg in resp:
+        print(msg.data)
+
+    if not task.done():
+        task.cancel()
 
     await resp.close()
 
@@ -26,6 +30,20 @@ async def websocket_handler(request):
 
     request.app['sockets'].remove(resp)
     return resp
+
+
+async def count(ws, n):
+    """
+    Send 1 to n numbers to the given websocket.
+
+    """
+    for i in range(1, n+1):
+        try:
+            ws.send_str(str(i))
+            await asyncio.sleep(1.0)
+        except CancelledError:
+            print('Count was cancelled at %d' % i)
+            return 
 
 
 def main():
