@@ -1,3 +1,10 @@
+"""
+This web app starts a counter task that counts from 1 to n (as specified by a
+query string parameter). As it runs, the counter task sends a message to every
+active websocket.
+
+"""
+
 import asyncio
 from pathlib import Path
 from aiohttp import web, MsgType
@@ -36,7 +43,7 @@ async def websocket_handler(request):
 
 async def count(app, n):
     """
-    Send 1 to n numbers to all the websockets.
+    Send 1 to n numbers to all websockets with a 1 second delay.
 
     """
     for i in range(1, n+1):
