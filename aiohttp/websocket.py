@@ -17,7 +17,7 @@ async def websocket_handler(request):
 
     request.app['sockets'].add(resp)
 
-    task = asyncio.ensure_future(count(resp, 10))
+    task = asyncio.ensure_future(count(resp, 8))
     async for msg in resp:
         print(msg.data)
 
@@ -43,7 +43,9 @@ async def count(ws, n):
             await asyncio.sleep(1.0)
         except CancelledError:
             print('Count was cancelled at %d' % i)
-            return 
+            return
+
+    await ws.close()
 
 
 def main():
