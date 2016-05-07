@@ -16,9 +16,16 @@ ws.onmessage = (evt) => {
   $('#messages').append(p)
 }
 
-$('form button').on('click', function(evt) {
+$('button.start').on('click', function(evt) {
   evt.preventDefault()
   $.get('/start-task/?' + $('form').serialize(), (data) => {
+    console.log(data)
+  })
+})
+
+$('button.stop').on('click', function(evt) {
+  evt.preventDefault()
+  $.get('/stop-task/?' + $('form').serialize(), (data) => {
     console.log(data)
   })
 })

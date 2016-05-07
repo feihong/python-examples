@@ -30,6 +30,16 @@ async def start_task(request):
     return web.Response(text='task started')
 
 
+async def stop_task(request):
+    app = request.app
+    current_task = app['current_task']
+    if current_task and not current_task.done():
+        current_task.cancel()
+        return web.Response(text='task cancelled')
+    else:
+        return web.Response(text='task not cancelled')
+
+
 async def status(request):
     print('Websocket connection opened')
     resp = web.WebSocketResponse()
@@ -77,6 +87,7 @@ def main():
     app['current_task_name'] = None
     app.router.add_route('GET', '/', index)
     app.router.add_route('GET', '/start-task/', start_task)
+    app.router.add_route('GET', '/stop-task/', stop_task)
     app.router.add_route('GET', '/status/', status)
     app.router.add_static('/static/', Path(__file__).parent)
     web.run_app(app)
