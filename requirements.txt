@@ -1,6 +1,8 @@
-nose
-ipython
+aiohttp
 arrow
+ipdb
 hanzidentifier
-urwid
+Mako
+nose
 npyscreen
+urwid
