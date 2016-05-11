@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<html>
+<head>
+<title>Run Tasks (WebSocket Example)</title>
+</head>
+<body>
+<h1>Run Tasks (WebSocket Example)</h1>
+
+<form>
+  Task: <select name='name'>
+  % for name in function_names:
+    <option value='${name}'>${name}</option>
+  % endfor
+  </select>
+  Count: <input name='count' value='10'>
+  <button class='start'>Start</button>
+  <button class='stop' style='margin-left: 5em'>Stop</button>
+</form>
+
+
+<div id='messages'></div>
+
+<script src='https://code.jquery.com/jquery-2.2.3.min.js'></script>
+<script src='/static/app.js'></script>
+</body>
+</html>
