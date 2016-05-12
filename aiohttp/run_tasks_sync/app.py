@@ -12,22 +12,41 @@ from aiohttp import web
 from mako.template import Template
 
 
-PROJECT_ROOT = Path(__file__).absolute().parents[2]
-sys.path.append(str(PROJECT_ROOT))
-import generate
+def get_function_pairs(names):
+    project_root = Path(__file__).absolute().parents[2]
+    sys.path.append(str(project_root))
+    import generate
 
-
-def get_delayed_generator_functions(names):
     for name in names:
-        def result(n):
-            fn = getattr(generate, name)
-            for v in fn(n):
-                time.sleep(1.0)
-                yield v
-        yield name, result
+        fn = convert_to_async_function(getattr(generate, name))
+        yield name, fn
 
 
-FUNCTIONS = dict(get_delayed_generator_functions([
+def convert_to_async_function(fn):
+    """
+    Accept a generator function and turn it into an async function.
+
+    """
+    # Add a 1 second delay before each step to simulate long-running task.
+    def slow_fn(n):
+        for v in fn(n):
+            time.sleep(1.0)
+            yield v
+
+    async def async_fn(n, logger):
+        generator = slow_fn(n)
+        while True:
+            try:
+                value = await asyncio.get_event_loop().run_in_executor(
+                    None, next, generator)
+                logger.info(value)
+            except StopIteration:
+                break
+
+    return async_fn
+
+
+FUNCTIONS = dict(get_function_pairs([
     'generate_chinese_characters', 'generate_emoticons'
 ]))
 
@@ -51,22 +70,11 @@ async def start_task(request):
     count = int(request.GET['count'])
     fn = FUNCTIONS[name]
 
-    # coroutine = asyncio.get_event_loop().run_in_executor(None, fn, app['logger'], count)
-    async def execute():
-        generator = fn(count)
-        while True:
-            try:
-                value = await asyncio.get_event_loop().run_in_executor(
-                    None, next, generator)
-                logger.info(value)
-            except StopIteration:
-                break
-
-    app['current_task'] = asyncio.ensure_future(execute())
-    app['current_task_name'] = fn.__name__
-    app['logger'].info('Started task: %s' % fn.__name__)
+    app['current_task'] = asyncio.ensure_future(fn(count, logger))
+    app['current_task_name'] = name
+    app['logger'].info('Started task: %s' % name)
     app['current_task'].add_done_callback(
-        lambda f: app['logger'].info('Task %s completed' % app['current_task_name']))
+        lambda f: logger.info('Task %s completed' % name))
     return web.Response(text='task started')
 
 
