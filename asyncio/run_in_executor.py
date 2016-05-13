@@ -1,3 +1,4 @@
+import time
 import asyncio
 
 
@@ -5,12 +6,17 @@ COUNT = 5
 
 
 def synchronous_function():
-    import time
     for i in range(COUNT):
         print(i)
         time.sleep(1)
     return 'Hoosier Mama'
 
+
+def synchronous_generator_function():
+    for i in range(65, 65 + COUNT):
+        yield chr(i)
+        time.sleep(1)
+        
 
 async def func1():
     message = await loop.run_in_executor(None, synchronous_function)
@@ -18,9 +24,13 @@ async def func1():
 
 
 async def func2():
-    for i in range(65, 65 + COUNT):
-        print(chr(i))
-        await asyncio.sleep(1)
+    generator = synchronous_generator_function()
+    while True:
+        try:
+            value = await loop.run_in_executor(None, lambda: next(generator))
+            print(value)
+        except StopIteration:
+            break
 
 
 async def main():
