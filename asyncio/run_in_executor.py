@@ -1,5 +1,6 @@
 import time
 import asyncio
+import threading
 
 
 COUNT = 5
@@ -23,15 +24,28 @@ async def func1():
 
 async def func2():
     def generator_function_wrapper(fn):
+        interrupted = False
         for v in fn():
-            loop.call_soon_threadsafe(lambda: print(v + ' in bed!'))
+            if stopEvent.is_set():
+                print('Stopping the generator')
+                interrupted = True
+                break
+            loop.call_soon_threadsafe(lambda: print(v * 8))
+        if not interrupted:
+            print('Generator completed')
 
     await loop.run_in_executor(None, generator_function_wrapper, synchronous_generator_function)
 
 
+async def stop_func2():
+    await asyncio.sleep(3)
+    stopEvent.set()
+
+
 async def main():
-    await asyncio.wait([func1(), func2()])
+    await asyncio.wait([func1(), func2(), stop_func2()])
 
 
+stopEvent = threading.Event()
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
