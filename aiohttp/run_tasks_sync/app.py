@@ -7,9 +7,45 @@ While a given task is running, it sends messages to all active websockets.
 import sys
 import time
 import asyncio
+import functools
+import threading
 from pathlib import Path
 from aiohttp import web
 from mako.template import Template
+
+
+class GeneratorTask:
+    def __init__(self, name, fn, callback):
+        self.name = name
+        self.fn = fn
+        self.stop_event = threading.Event()
+        self.callback = callback
+
+    def cancel(self):
+        self.stop_event.set()
+
+    def done(self):
+        return self.stop_event.is_set()
+
+    def run(self):
+        self.task = asyncio.ensure_future(self._run())
+
+    def add_done_callback(self, callback):
+        self.task.add_done_callback(callback)
+
+    async def _run(self):
+        loop = asyncio.get_event_loop()
+        threadsafe_callback = functools.partial(loop.call_soon_threadsafe, self.callback)
+
+        def wrapper():
+            for value in self.fn():
+                if self.stop_event.is_set():
+                    break
+                time.sleep(1)   # to simulate a computation-intensiveness
+                threadsafe_callback(value)
+            self.stop_event.set()
+
+        await loop.run_in_executor(None, wrapper)
 
 
 def get_function_pairs(names):
@@ -18,32 +54,7 @@ def get_function_pairs(names):
     import generate
 
     for name in names:
-        fn = convert_to_async_function(getattr(generate, name))
-        yield name, fn
-
-
-def convert_to_async_function(fn):
-    """
-    Accept a generator function and turn it into an async function.
-
-    """
-    # Add a 1 second delay before each step to simulate long-running task.
-    def slow_fn(n):
-        for v in fn(n):
-            time.sleep(1.0)
-            yield v
-
-    async def async_fn(n, logger):
-        generator = slow_fn(n)
-        while True:
-            try:
-                value = await asyncio.get_event_loop().run_in_executor(
-                    None, next, generator)
-                logger.info(value)
-            except StopIteration:
-                break
-
-    return async_fn
+        yield name, getattr(generate, name)
 
 
 FUNCTIONS = dict(get_function_pairs([
@@ -68,22 +79,23 @@ async def start_task(request):
 
     name = request.GET['name']
     count = int(request.GET['count'])
-    fn = FUNCTIONS[name]
+    fn = functools.partial(FUNCTIONS[name], count)
+    task = GeneratorTask(name, fn, logger.info)
+    task.run()
 
-    app['current_task'] = asyncio.ensure_future(fn(count, logger))
-    app['current_task_name'] = name
-    app['logger'].info('Started task: %s' % name)
+    app['current_task'] = task
+    app['logger'].info('Started task: %s' % task.name)
     app['current_task'].add_done_callback(
-        lambda f: logger.info('Task %s completed' % name))
+        lambda f: logger.info('Task %s completed' % task.name))
     return web.Response(text='task started')
 
 
 async def stop_task(request):
     app = request.app
-    current_task = app['current_task']
-    if current_task and not current_task.done():
-        current_task.cancel()
-        app['logger'].info('Task was cancelled')
+    task = app['current_task']
+    if task and not task.done():
+        task.cancel()
+        app['logger'].info('Trying to cancel task %s' % task.name)
         return web.Response(text='task cancelled')
     else:
         return web.Response(text='task not cancelled')
@@ -98,7 +110,7 @@ async def status(request):
     app['sockets'].add(resp)
 
     if app['current_task'] and not app['current_task'].done():
-        resp.send_str('Current running task: %s' % app['current_task_name'])
+        resp.send_str('Current running task: %s' % app['current_task'].name)
 
     async for msg in resp: pass
     await resp.close()
@@ -122,7 +134,6 @@ def main():
     app['sockets'] = set()
     app['logger'] = Logger(app['sockets'])
     app['current_task'] = None
-    app['current_task_name'] = None
     app.router.add_route('GET', '/', index)
     app.router.add_route('GET', '/start-task/', start_task)
     app.router.add_route('GET', '/stop-task/', stop_task)
