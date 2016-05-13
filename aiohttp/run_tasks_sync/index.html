@@ -2,20 +2,15 @@
 <meta charset="utf-8" />
 <html>
 <head>
-<title>Run Tasks (WebSocket Example)</title>
+<title>Generator Task Example</title>
 </head>
 <body>
-<h1>Run Tasks (WebSocket Example)</h1>
+<h1>Generator Task Example</h1>
 
 <form>
-  Task: <select name='name'>
-  % for name in function_names:
-    <option value='${name}'>${name}</option>
-  % endfor
-  </select>
   Count: <input name='count' value='10'>
   <button class='start'>Start</button>
-  <button class='stop' style='margin-left: 5em'>Stop</button>
+  <button class='stop'>Stop</button>
 </form>
 
 
