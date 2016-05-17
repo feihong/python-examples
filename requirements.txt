@@ -5,4 +5,5 @@ hanzidentifier
 Mako
 nose
 npyscreen
+Tornado
 urwid
