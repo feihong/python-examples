@@ -13,3 +13,10 @@ $('button.generate').on('click', (evt) => {
     $('#result').text('Generated characters: ' + data)
   })
 })
+
+$('button.background').on('click', (evt) => {
+  evt.preventDefault()
+  $.get('/background/', (data) => {
+    $('#result').text(data)
+  })
+})

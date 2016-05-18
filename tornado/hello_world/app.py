@@ -33,6 +33,23 @@ class GenerateCharactersHandler(RequestHandler):
         self.write(', '.join(result))
 
 
+class BackgroundTaskHandler(RequestHandler):
+    @gen.coroutine
+    def get(self):
+        IOLoop.current().spawn_callback(background_task)
+        self.write('Started background task')
+
+
+@gen.coroutine
+def background_task():
+    count = random.randint(3, 20)
+    print('Committed to eating %d tacos' % count)
+    for i in range(count):
+        print('Ate taco %d' % (i + 1))
+        yield gen.sleep(1)
+    print('Done eating tacos!')
+
+
 if __name__ == '__main__':
     settings = dict(
         static_path=str(Path(__file__).parent.absolute())
@@ -41,6 +58,7 @@ if __name__ == '__main__':
         (r'/', MainHandler),
         (r'/ip/', IpAddressHandler),
         (r'/generate/', GenerateCharactersHandler),
+        (r'/background/', BackgroundTaskHandler),
     ], **settings)
     app.listen(8000)
     loop = IOLoop.current()
