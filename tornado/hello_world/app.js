@@ -3,6 +3,13 @@
 $('button.ip').on('click', (evt) => {
   evt.preventDefault()
   $.get('/ip/', (data) => {
-    alert('Your IP address is: ' + data)
+    $('#result').text('Your IP address is: ' + data)
+  })
+})
+
+$('button.generate').on('click', (evt) => {
+  evt.preventDefault()
+  $.get('/generate/', (data) => {
+    $('#result').text('Generated characters: ' + data)
   })
 })
