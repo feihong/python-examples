@@ -13,15 +13,14 @@ class MainHandler(RequestHandler):
 
 class StartHandler(RequestHandler):
     def get(self):
-        handle = IOLoop.current().add_callback(
-            generate_characters, self.application.logger)
-        print('Handle:', handle)
+        count = int(self.get_query_argument('count', 5))
+        IOLoop.current().add_callback(
+            generate_characters, count, self.application.logger)
         self.write('Started background task')
 
 
 class StopHandler(RequestHandler):
     def get(self):
-        # IOLoop.current().spawn_callback(background_task)
         self.write('Stopping background task...')
 
 
@@ -39,8 +38,7 @@ class StatusHandler(WebSocketHandler):
 
 
 @gen.coroutine
-def generate_characters(logger):
-    count = random.randint(2, 6)
+def generate_characters(count, logger):
     logger.info('Preparing to generate %d characters' % count)
 
     for i in range(count):

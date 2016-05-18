@@ -17,7 +17,8 @@ ws.onmessage = (evt) => {
 }
 
 $('button.start').on('click', function() {
-  $.get('/start/', (data) => {
+  let value = $('input').val()
+  $.get('/start/?count=' + value, (data) => {
     console.log(data)
   })
 })
