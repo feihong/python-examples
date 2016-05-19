@@ -25,6 +25,11 @@ class GeneratorTask:
         return self.stop_event.is_set()
 
     def start(self):
+        """
+        Unlike asyncio's run_in_executor(), submit() does not raise an exception
+        when the function it tries errors out.
+
+        """
         self.future = executor.submit(self._stoppable_run)
 
     def run(self):
