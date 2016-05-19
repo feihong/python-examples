@@ -77,6 +77,9 @@ class StartHandler(RequestHandler):
             app.current_task = GenerateCharactersTask(count, app.logger)
             app.current_task.start()
             self.write('Started background task')
+            def done_callback(future):
+                app.current_task = None
+            app.current_task.add_done_callback(done_callback)
 
 
 class StopHandler(RequestHandler):
