@@ -5,7 +5,7 @@ from pathlib import Path
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from tornado.ioloop import IOLoop
-from tornado.web import Application, RequestHandler
+from tornado.web import Application, RequestHandler, StaticFileHandler
 from tornado import gen
 from tornado.websocket import WebSocketHandler
 
@@ -127,15 +127,16 @@ class Logger:
 
 
 if __name__ == '__main__':
-    settings = dict(
-        static_path=str(Path(__file__).parent.absolute())
+    static_kwargs = dict(
+        path=str(Path(__file__).parent.absolute()),
+        default_filename='index.html',
     )
     app = Application([
-        (r'/', MainHandler),
         (r'/start/', StartHandler),
         (r'/stop/', StopHandler),
         (r'/websocket/', StatusHandler),
-    ], **settings)
+        (r'/(.*)', StaticFileHandler, static_kwargs)
+    ])
     app.sockets = set()
     app.current_task = None
     app.logger = Logger(app.sockets)
