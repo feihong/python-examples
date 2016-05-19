@@ -31,6 +31,7 @@ class GeneratorTask:
 
         """
         self.future = executor.submit(self._stoppable_run)
+        self.add_done_callback(self._done_callback)
 
     def run(self):
         """
@@ -48,6 +49,14 @@ class GeneratorTask:
             if self.stop_event.is_set():
                 break
         self.stop_event.set()
+
+    def _done_callback(self, future):
+        # If there was an exception inside of self._stoppable_run, then it won't
+        # be raised until you call future.result().
+        try:
+            future.result()
+        except Exception as ex:
+            self.log('Error: %s' % ex)
 
 
 class GenerateCharactersTask(GeneratorTask):
@@ -82,6 +91,7 @@ class StartHandler(RequestHandler):
             app.current_task = GenerateCharactersTask(count, app.logger)
             app.current_task.start()
             self.write('Started background task')
+            # Set app.current_task to None when task finishes.
             def done_callback(future):
                 app.current_task = None
             app.current_task.add_done_callback(done_callback)
