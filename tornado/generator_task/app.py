@@ -108,11 +108,11 @@ class StopHandler(RequestHandler):
 
 class StatusHandler(WebSocketHandler):
     def open(self):
-        print("WebSocket opened")
+        print('WebSocket opened')
         self.application.sockets.add(self)
 
     def on_close(self):
-        print("WebSocket closed")
+        print('WebSocket closed')
         self.application.sockets.remove(self)
 
 
@@ -126,17 +126,29 @@ class Logger:
             socket.write_message(text)
 
 
+class NoCacheStaticFileHandler(StaticFileHandler):
+    def __init__(self, *args, **kwargs):
+        kwargs.update(
+            path=str(Path(__file__).parent.absolute()),
+            default_filename='index.html',
+        )
+        super(NoCacheStaticFileHandler, self).__init__(*args, **kwargs)
+
+    def set_extra_headers(self, path):
+        self.set_header('Cache-control', 'no-cache')
+
+
 if __name__ == '__main__':
-    static_kwargs = dict(
-        path=str(Path(__file__).parent.absolute()),
-        default_filename='index.html',
+    settings = dict(
+        debug=True,
+        autoreload=True,
     )
     app = Application([
         (r'/start/', StartHandler),
         (r'/stop/', StopHandler),
         (r'/websocket/', StatusHandler),
-        (r'/(.*)', StaticFileHandler, static_kwargs)
-    ])
+        (r'/(.*)', NoCacheStaticFileHandler),
+    ], **settings)
     app.sockets = set()
     app.current_task = None
     app.logger = Logger(app.sockets)
