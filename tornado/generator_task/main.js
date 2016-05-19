@@ -1,6 +1,6 @@
 'use strict';
 
-var ws = new WebSocket('ws://' + window.location.host + '/websocket/')
+let ws = new WebSocket('ws://' + window.location.host + '/websocket/')
 
 ws.onopen = () => {
   console.log('Websocket opened');
@@ -11,9 +11,13 @@ ws.onclose = () => {
 }
 
 ws.onmessage = (evt) => {
-  let p = $('<p></p>')
-  p.text(evt.data)
-  $('#messages').append(p)
+  let obj = JSON.parse(evt.data)
+
+  if (obj.type === 'message') {
+    let p = $('<p></p>')
+    p.text(obj.value)
+    $('#messages').append(p)
+  }
 }
 
 $('button.start').on('click', function() {

@@ -3,6 +3,7 @@ import time
 import functools
 from pathlib import Path
 import threading
+import json
 from concurrent.futures import ThreadPoolExecutor
 from tornado.ioloop import IOLoop
 from tornado.web import Application, RequestHandler, StaticFileHandler
@@ -72,7 +73,7 @@ class GenerateCharactersTask(GeneratorTask):
         for i in range(self.count):
             c = chr(random.randint(0x4e00, 0x9fff))
             self.log(c)
-            time.sleep(1)
+            time.sleep(0.2)
             yield
 
         self.log('Finished generating characters')
@@ -120,10 +121,13 @@ class Logger:
     def __init__(self, sockets):
         self.sockets = sockets
 
-    def info(self, text):
-        print(text)
+    def info(self, obj):
+        print(obj)
+        if isinstance(obj, str):
+            obj = dict(type='message', value=obj)
+        data = json.dumps(obj)
         for socket in self.sockets:
-            socket.write_message(text)
+            socket.write_message(data)
 
 
 class NoCacheStaticFileHandler(StaticFileHandler):
