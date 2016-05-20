@@ -11,10 +11,10 @@ from tornado import gen
 from tornado.websocket import WebSocketHandler
 
 
-executor = ThreadPoolExecutor()
+executor = ThreadPoolExecutor(5)
 
 
-class GeneratorTask:
+class GeneratorTask(object):
     def __init__(self, func):
         self.stop_event = threading.Event()
         self.future = None
@@ -73,7 +73,7 @@ def generate_chinese_characters(count):
     yield 'Preparing to generate %d characters' % count
 
     for i in range(count):
-        c = chr(random.randint(0x4e00, 0x9fff))
+        c = unichr(random.randint(0x4e00, 0x9fff))
         yield c
         yield dict(type='progress', current=i+1, total=count)
         time.sleep(1)
@@ -127,7 +127,7 @@ class Logger:
 
     def info(self, obj):
         print(obj)
-        if isinstance(obj, str):
+        if isinstance(obj, basestring):
             obj = dict(type='message', value=obj)
         data = json.dumps(obj)
         for socket in self.sockets:
