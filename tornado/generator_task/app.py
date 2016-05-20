@@ -74,7 +74,7 @@ class GenerateCharactersTask(GeneratorTask):
             c = chr(random.randint(0x4e00, 0x9fff))
             self.log(c)
             self.log(dict(type='progress', current=i+1, total=self.count))
-            time.sleep(0.4)
+            time.sleep(1)
             yield
 
         self.log('Finished generating characters')

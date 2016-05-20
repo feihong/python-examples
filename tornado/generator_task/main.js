@@ -15,9 +15,11 @@ ws.onmessage = (evt) => {
 
   switch (obj.type) {
     case 'message':
+      let messages = $('#messages')
       let p = $('<p></p>')
       p.text(obj.value)
-      $('#messages').append(p)
+      messages.append(p)
+      messages.scrollTop(p.offset().top - messages.offset().top + messages.scrollTop())
       break
     case 'progress':
       $('#progress').text(`Progress: ${obj.current} out of ${obj.total}`)
