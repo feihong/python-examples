@@ -73,7 +73,8 @@ class GenerateCharactersTask(GeneratorTask):
         for i in range(self.count):
             c = chr(random.randint(0x4e00, 0x9fff))
             self.log(c)
-            time.sleep(0.2)
+            self.log(dict(type='progress', current=i+1, total=self.count))
+            time.sleep(0.4)
             yield
 
         self.log('Finished generating characters')

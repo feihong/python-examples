@@ -13,10 +13,15 @@ ws.onclose = () => {
 ws.onmessage = (evt) => {
   let obj = JSON.parse(evt.data)
 
-  if (obj.type === 'message') {
-    let p = $('<p></p>')
-    p.text(obj.value)
-    $('#messages').append(p)
+  switch (obj.type) {
+    case 'message':
+      let p = $('<p></p>')
+      p.text(obj.value)
+      $('#messages').append(p)
+      break
+    case 'progress':
+      $('#progress').text(`Progress: ${obj.current} out of ${obj.total}`)
+      break
   }
 }
 
