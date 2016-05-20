@@ -36,7 +36,14 @@ class GeneratorTask:
 
     def run(self):
         """
-        Override with generator method.
+        Override in subclass with generator method.
+
+        """
+        raise NotImplemented
+
+    def log(self):
+        """
+        Override in subclass.
 
         """
         raise NotImplemented
@@ -46,9 +53,10 @@ class GeneratorTask:
             self.future.add_done_callback(callback)
 
     def _stoppable_run(self):
-        for _ in self.run():
+        for obj in self.run():
             if self.stop_event.is_set():
                 break
+            self.log(obj)
         self.stop_event.set()
 
     def _done_callback(self, future):
@@ -68,16 +76,15 @@ class GenerateCharactersTask(GeneratorTask):
         self.log = functools.partial(loop.add_callback, logger.info)
 
     def run(self):
-        self.log('Preparing to generate %d characters' % self.count)
+        yield 'Preparing to generate %d characters' % self.count
 
         for i in range(self.count):
             c = chr(random.randint(0x4e00, 0x9fff))
-            self.log(c)
-            self.log(dict(type='progress', current=i+1, total=self.count))
+            yield c
+            yield dict(type='progress', current=i+1, total=self.count)
             time.sleep(1)
-            yield
 
-        self.log('Finished generating characters')
+        yield 'Finished generating characters'
 
 
 class MainHandler(RequestHandler):
