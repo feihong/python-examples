@@ -17,6 +17,9 @@ ws.onmessage = (evt) => {
     case 'message':
       let messages = $('#messages')
       let p = $('<p></p>')
+      if (obj.value.length === 1) {
+        p.css('font-size', '1.5em')
+      }
       p.text(obj.value)
       messages.append(p)
       messages.scrollTop(p.offset().top - messages.offset().top + messages.scrollTop())
