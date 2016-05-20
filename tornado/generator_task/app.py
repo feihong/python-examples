@@ -15,9 +15,10 @@ executor = ThreadPoolExecutor()
 
 
 class GeneratorTask:
-    def __init__(self):
+    def __init__(self, func):
         self.stop_event = threading.Event()
         self.future = None
+        self.func = func
 
     def cancel(self):
         self.stop_event.set()
@@ -28,32 +29,25 @@ class GeneratorTask:
     def start(self):
         """
         Unlike asyncio's run_in_executor(), submit() does not raise an exception
-        when the function it tries errors out.
+        when the function it tries to run errors out.
 
         """
         self.future = executor.submit(self._stoppable_run)
         self.add_done_callback(self._done_callback)
 
-    def run(self):
-        """
-        Override in subclass with generator method.
-
-        """
-        raise NotImplemented
-
-    def log(self):
+    def log(self, obj):
         """
         Override in subclass.
 
         """
-        raise NotImplemented
+        print(obj)
 
     def add_done_callback(self, callback):
         if self.future:
             self.future.add_done_callback(callback)
 
     def _stoppable_run(self):
-        for obj in self.run():
+        for obj in self.func():
             if self.stop_event.is_set():
                 break
             self.log(obj)
@@ -68,23 +62,23 @@ class GeneratorTask:
             self.log('Error: %s' % ex)
 
 
-class GenerateCharactersTask(GeneratorTask):
-    def __init__(self, count, logger):
-        super(GenerateCharactersTask, self).__init__()
-        self.count = count
+class WebSocketLoggingTask(GeneratorTask):
+    def __init__(self, func, logger):
+        super(WebSocketLoggingTask, self).__init__(func)
         loop = IOLoop.current()
         self.log = functools.partial(loop.add_callback, logger.info)
 
-    def run(self):
-        yield 'Preparing to generate %d characters' % self.count
 
-        for i in range(self.count):
-            c = chr(random.randint(0x4e00, 0x9fff))
-            yield c
-            yield dict(type='progress', current=i+1, total=self.count)
-            time.sleep(1)
+def generate_chinese_characters(count):
+    yield 'Preparing to generate %d characters' % count
 
-        yield 'Finished generating characters'
+    for i in range(count):
+        c = chr(random.randint(0x4e00, 0x9fff))
+        yield c
+        yield dict(type='progress', current=i+1, total=count)
+        time.sleep(1)
+
+    yield 'Finished generating characters'
 
 
 class MainHandler(RequestHandler):
@@ -97,7 +91,9 @@ class StartHandler(RequestHandler):
         count = int(self.get_query_argument('count', 5))
         app = self.application
         if not app.current_task:
-            app.current_task = GenerateCharactersTask(count, app.logger)
+            app.current_task = WebSocketLoggingTask(
+                functools.partial(generate_chinese_characters, count),
+                app.logger)
             app.current_task.start()
             self.write('Started background task')
             # Set app.current_task to None when task finishes.
