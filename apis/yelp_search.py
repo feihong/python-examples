@@ -10,14 +10,19 @@ pip install yelp
 from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
 
-# The config_secret.txt file should contain the pasted contents of this page:
+# Copy and paste the contents of the following page into the multiline string below:
 # https://www.yelp.com/developers/manage_api_keys
 
+API_CREDENTIALS = """\
+Consumer Key 	xxxx
+Consumer Secret 	xxx
+Token 	xxxx
+Token Secret 	xxxx"""
+
 credentials = {}
-with open('config_secret.txt') as fp:
-    for line in fp.readlines():
-        key, value = line.split('\t')
-        credentials[key.strip().lower().replace(' ', '_')] = value.strip()
+for line in API_CREDENTIALS.splitlines():
+    key, value = line.split('\t')
+    credentials[key.strip().lower().replace(' ', '_')] = value.strip()
 
 
 auth = Oauth1Authenticator(
@@ -37,10 +42,10 @@ resp = client.search(
 businesses = (b for b in resp.businesses if not b.is_closed)
 
 for bus in businesses:
-    print bus.name
-    print '%s (%s)' % (bus.location.address[0], bus.location.cross_streets)
-    print 'Categories:', ', '.join(c.name for c in bus.categories)
-    print 'Rating:', bus.rating
-    print 'Review:', bus.snippet_text
-    print '-' * 80
-    print
+    print(bus.name)
+    print('%s (%s)' % (bus.location.address[0], bus.location.cross_streets))
+    print('Categories:', ', '.join(c.name for c in bus.categories))
+    print('Rating:', bus.rating)
+    print('Review:', bus.snippet_text)
+    print('-' * 80)
+    print()
