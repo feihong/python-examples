@@ -2,11 +2,14 @@
 Example of using the FourSquare API
 
 Dependency:
-
 pip install foursquare
+
+Your credentials can be found on this page:
+https://foursquare.com/developers/apps
 
 """
 import foursquare
+
 
 CLIENT_ID = 'xxx'
 CLIENT_SECRET = 'xxx'
