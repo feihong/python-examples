@@ -11,3 +11,9 @@ Run tests:
 ```
 nosetests -v
 ```
+
+Run tests without capturing stdout (necessary if you want to debug within test code):
+
+```
+nosetests -s
+```

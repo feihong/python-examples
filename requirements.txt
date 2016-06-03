@@ -1,5 +1,6 @@
 aiohttp
 arrow
+geopy
 ipdb
 hanzidentifier
 Mako
