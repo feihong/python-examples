@@ -8,3 +8,4 @@ nose
 npyscreen
 Tornado
 urwid
+watchdog
