@@ -1,0 +1,12 @@
+extends base.html
+
+block head
+  include head.jade
+
+block content
+  ul
+    - for pet in pets
+      li= pet
+
+block foot
+  include foot.html
