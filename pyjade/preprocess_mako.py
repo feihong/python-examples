@@ -2,11 +2,7 @@ from mako.template import Template
 from pyjade.ext.mako import preprocessor
 
 jade_source = """
-p
-    = greeting
-    ,
-    = guest_name
-    !
+p #{greeting}, #{guest_name}!
 
 - todo = ['laundry', 'call Amy back', 'write memoirs']
 
