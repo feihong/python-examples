@@ -6,6 +6,7 @@ hanzidentifier
 Mako
 nose
 npyscreen
+Plim
 pyjade
 Tornado
 urwid
