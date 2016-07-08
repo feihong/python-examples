@@ -1,10 +1,6 @@
 """
 Example of using the Yelp API
 
-Dependency:
-
-pip install yelp
-
 """
 
 from yelp.client import Client
