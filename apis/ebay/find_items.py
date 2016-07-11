@@ -1,5 +1,4 @@
 import os
-from ebaysdk.exception import ConnectionError
 from ebaysdk.finding import Connection
 
 
