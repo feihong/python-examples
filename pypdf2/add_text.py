@@ -21,16 +21,18 @@ if __name__ == '__main__':
 
         output = PdfFileWriter()
 
-        # Add page from another document.
-        output.addPage(input1.getPage(0))
-
-        # Add page that was merged with another page.
+        # Generate a page that just contains some text.
         text_page = get_text_page(
             2.2, 10, 'Hey Jude, this was added at %s' % datetime.datetime.now())
-        output.addPage(text_page)
 
-        # Add an empty page
-        output.addBlankPage()
+        # Get first page from input document.
+        page = input1.getPage(0)
+
+        # Merge the text page into the input page.
+        page.mergePage(text_page)
+
+        # Add page to output document.
+        output.addPage(page)
 
         with open('output.pdf', 'wb') as fout:
             output.write(fout)
