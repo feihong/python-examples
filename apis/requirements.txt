@@ -1,3 +1,4 @@
 ebaysdk
 foursquare
+stamps.py
 yelp
