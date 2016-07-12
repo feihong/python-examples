@@ -10,7 +10,7 @@ response = api.execute('GetOrders', {'NumberOfDays': 1})
 # pprint(response.dict())
 
 orders = response.reply.OrderArray.Order
-print('Received %d orders\n' % len(orders))
+
 for order in orders:
     print(order.BuyerUserID)
     print(order.OrderStatus)
@@ -24,3 +24,5 @@ for order in orders:
     print(address)
     print('=' * 80)
     # import ipdb; ipdb.set_trace()
+
+print('Received %d orders\n' % len(orders))
