@@ -8,8 +8,10 @@ def get_text_page(x, y, text):
     inch = 72
     bio = BytesIO()
     c = Canvas(bio, pagesize=(8.5*inch, 11*inch))
-    c.setFillColorRGB(1, 0, 0)
-    c.drawString(x*inch, y*inch, text)
+    c.setFillColorRGB(1, 0, 1)
+    c.translate(x * inch, y * inch)
+    c.rotate(-90)
+    c.drawString(0, 0, text)
     c.save()
     reader = PdfFileReader(bio)
     return reader.getPage(0)
@@ -23,7 +25,7 @@ if __name__ == '__main__':
 
         # Generate a page that just contains some text.
         text_page = get_text_page(
-            2.2, 10, 'Hey Jude, this was added at %s' % datetime.datetime.now())
+            4.5, 9, 'Hey Jude, this was added at %s' % datetime.datetime.now())
 
         # Get first page from input document.
         page = input1.getPage(0)
