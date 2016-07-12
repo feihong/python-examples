@@ -24,6 +24,7 @@ for order in orders:
     print(order.OrderStatus)
     print('Created %s' % order.CreatedTime)
     print('Paid %s on %s' % (order.AmountPaid.value, order.PaidTime))
+    print('Shipped %s' % order.ShippedTime)
     transactions = order.TransactionArray.Transaction
     item_titles = '; '.join(t.Item.Title for t in transactions)
     print(item_titles)
