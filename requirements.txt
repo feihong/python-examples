@@ -8,6 +8,8 @@ nose
 npyscreen
 Plim
 pyjade
+PyPDF2
+reportlab
 Tornado
 urwid
 watchdog
