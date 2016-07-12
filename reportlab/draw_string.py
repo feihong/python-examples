@@ -12,13 +12,15 @@ with open('test.pdf', 'wb') as fp:
     c.setFont('Helvetica', 12 * point)
 
     y = 10
-    for i in range(1, 33):
-        c.drawString(
-            1 * inch,
-            y * inch,
-            '%d. I must not fear. Fear is the mind killer.' % i
-        )
-        y -= 0.3
+    for i in range(1, 38):
+        if i == 12:
+            c.setFillColorRGB(1,0,0)
+            text = "%d. Oh no, there's a ghost behind you!!!" % i
+        else:
+            c.setFillColorRGB(0,0,0)
+            text = '%d. I must not fear. Fear is the mind killer.' % i
+        c.drawString(1 * inch, y * inch, text)
+        y -= 0.25
 
     c.showPage()
     c.save()
