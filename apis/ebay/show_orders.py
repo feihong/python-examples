@@ -1,3 +1,4 @@
+import datetime
 from pprint import pprint
 import os
 from ebaysdk.trading import Connection as Trading
@@ -6,7 +7,15 @@ from ebaysdk.trading import Connection as Trading
 credentials = dict(zip(('appid', 'devid', 'certid', 'token'), os.environ['EBAY_PARAMS'].split(';')))
 api = Trading(config_file=None, **credentials)
 
-response = api.execute('GetOrders', {'NumberOfDays': 1})
+today = datetime.datetime.combine(datetime.date.today(), datetime.time(0,0))
+dt_start = today - datetime.timedelta(days=1)
+dt_end = datetime.datetime.now()
+
+response = api.execute('GetOrders', {
+    'CreateTimeFrom': dt_start,
+    'CreateTimeTo': dt_end,    
+})
+# response = api.execute('GetOrders', {'NumberOfDays': 1})
 # pprint(response.dict())
 
 orders = response.reply.OrderArray.Order
