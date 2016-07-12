@@ -15,8 +15,10 @@ for order in orders:
     print(order.BuyerUserID)
     print(order.OrderStatus)
     transactions = order.TransactionArray.Transaction
-    item_titles = ' AND '.join(t.Item.Title for t in transactions)
+    item_titles = '; '.join(t.Item.Title for t in transactions)
     print(item_titles)
+    item_ids = ', '.join(t.Item.ItemID for t in transactions)
+    print(item_ids)
     sa = order.ShippingAddress
     address = '%s\n%s\n%s\n%s, %s %s' % (sa.Name, sa.Street1, sa.Street2, sa.CityName, sa.CountryName, sa.PostalCode)
     print(address)
