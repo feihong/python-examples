@@ -7,22 +7,22 @@ from ebaysdk.trading import Connection as Trading
 credentials = dict(zip(('appid', 'devid', 'certid', 'token'), os.environ['EBAY_PARAMS'].split(';')))
 api = Trading(config_file=None, **credentials)
 
-today = datetime.datetime.combine(datetime.date.today(), datetime.time(0,0))
-dt_start = today - datetime.timedelta(days=1)
-dt_end = datetime.datetime.now()
-
-response = api.execute('GetOrders', {
-    'CreateTimeFrom': dt_start,
-    'CreateTimeTo': dt_end,    
-})
-# response = api.execute('GetOrders', {'NumberOfDays': 1})
+response = api.execute('GetOrders', {'NumberOfDays': 2})
 # pprint(response.dict())
+
+today = datetime.datetime.combine(datetime.date.today(), datetime.time(0,0))
+yesterday = today - datetime.timedelta(days=1)
+paid_count = 0
 
 orders = response.reply.OrderArray.Order
 
 for order in orders:
+    if order.PaidTime < yesterday:
+        continue
+    paid_count += 1
     print(order.BuyerUserID)
     print(order.OrderStatus)
+    print('Created %s' % order.CreatedTime)
     print('Paid %s on %s' % (order.AmountPaid.value, order.PaidTime))
     transactions = order.TransactionArray.Transaction
     item_titles = '; '.join(t.Item.Title for t in transactions)
@@ -35,4 +35,5 @@ for order in orders:
     print('=' * 80)
     # import ipdb; ipdb.set_trace()
 
-print('Received %d orders\n' % len(orders))
+print('Received %d orders' % len(orders))
+print('%d orders were paid for since yesterday' % paid_count)
