@@ -14,6 +14,7 @@ orders = response.reply.OrderArray.Order
 for order in orders:
     print(order.BuyerUserID)
     print(order.OrderStatus)
+    print('Paid %s on %s' % (order.AmountPaid.value, order.PaidTime))
     transactions = order.TransactionArray.Transaction
     item_titles = '; '.join(t.Item.Title for t in transactions)
     print(item_titles)
