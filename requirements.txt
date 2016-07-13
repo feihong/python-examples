@@ -1,5 +1,6 @@
 aiohttp
 arrow
+Fabric3
 geopy
 ipdb
 hanzidentifier
