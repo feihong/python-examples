@@ -10,6 +10,7 @@ Plim
 pyjade
 PyPDF2
 reportlab
+requests
 Tornado
 urwid
 watchdog
