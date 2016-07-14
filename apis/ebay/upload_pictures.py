@@ -17,13 +17,13 @@ imgfiles = [f for f in Path('.').iterdir() if f.suffix == '.jpg']
 
 for imgfile in enumerate(imgfiles):
     files = {'file': ('EbayImage', imgfile.open('rb'))}
-
     try:
         response = api.execute('UploadSiteHostedPictures', {
             'WarningLevel': 'High',
             'PictureName': imgfile.stem,
         }, files=files)
         pprint(response.dict())
+        import ipdb; ipdb.set_trace()
         details = response.reply.SiteHostedPictureDetails
         print('URL: ' + details.FullURL)
         print('Use by date: ' + details.UseByDate)
