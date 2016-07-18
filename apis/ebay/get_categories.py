@@ -17,4 +17,10 @@ api = Trading(config_file=None, **credentials)
 response = api.execute('GetStore', {
     'CategoryStructureOnly': True,
 })
-pprint(response.dict())
+# pprint(response.dict())
+
+categories = response.reply.Store.CustomCategories.CustomCategory
+for cat in categories:
+    print(cat.Name)
+    for child in getattr(cat, 'ChildCategory', []):
+        print('- ' + child.Name)
