@@ -7,3 +7,10 @@ def test_six_months_ago():
     past = dt.replace(months=-6).replace(day=1)
     assert past.month == 6
     assert past.day == 1
+
+
+def test_utf_offset():
+    "Get the difference in hours between your local timezone and UTC."
+    dt = arrow.now()
+    hours_diff = dt.utcoffset().total_seconds() / 3600
+    assert hours_diff == -5.0
