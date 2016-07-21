@@ -16,6 +16,17 @@ later = now.replace(days=+120)
 response = api.execute('GetSellerList', {
     'EndTimeFrom': now,
     'EndTimeTo': later,
+    'GranularityLevel': 'Medium',
+    'Pagination': {
+        'EntriesPerPage': 10,
+    },
+    'OutputSelector': [
+        'ReturnedItemCountActual',
+        'PaginationResult',
+        'ItemArray.Item.ItemID',
+        'ItemArray.Item.Title',
+        'ItemArray.Item.Storefront',
+    ]
 })
 with open('items.json', 'w') as fp:
     json.dump(response.dict(), fp, indent=2)
