@@ -15,22 +15,23 @@ response = api.execute('GetMyeBaySelling', {
         'ActiveList.PaginationResult',
         'ActiveList.ItemArray.Item.Title',
         'ActiveList.ItemArray.Item.BuyItNowPrice',
+        'ActiveList.ItemArray.Item.ListingDetails.ViewItemURL',        
     ]
 })
 with open('items.json', 'w') as fp:
     json.dump(response.dict(), fp, indent=2)
 
 
-# items = response.reply.ActiveList.ItemArray.Item
-# print('Got %d active list items' % len(items))
-#
-# pagination_result = response.reply.ActiveList.PaginationResult
-# print('%s total items' % pagination_result.TotalNumberOfEntries)
-# print('%s total pages' % pagination_result.TotalNumberOfPages)
-# print()
-#
-# print('First item:')
-# item = items[0]
-# print(item.Title)
-# print(item.ListingDetails.ViewItemURL)
-# print(item.BuyItNowPrice.value)
+items = response.reply.ActiveList.ItemArray.Item
+print('Got %d active list items' % len(items))
+
+pagination_result = response.reply.ActiveList.PaginationResult
+print('%s total items' % pagination_result.TotalNumberOfEntries)
+print('%s total pages' % pagination_result.TotalNumberOfPages)
+print()
+
+print('First item:')
+item = items[0]
+print(item.Title)
+print(item.ListingDetails.ViewItemURL)
+print(item.BuyItNowPrice.value)
