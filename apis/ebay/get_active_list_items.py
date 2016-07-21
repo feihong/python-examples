@@ -11,11 +11,12 @@ response = api.execute('GetMyeBaySelling', {
     'ActiveList': {
         'Include': True
     },
+    'DetailLevel': 'ReturnAll',
     'OutputSelector': [
         'ActiveList.PaginationResult',
         'ActiveList.ItemArray.Item.Title',
         'ActiveList.ItemArray.Item.BuyItNowPrice',
-        'ActiveList.ItemArray.Item.ListingDetails.ViewItemURL',        
+        'ActiveList.ItemArray.Item.ListingDetails.ViewItemURL',
     ]
 })
 with open('items.json', 'w') as fp:
