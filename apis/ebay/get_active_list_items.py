@@ -1,3 +1,4 @@
+import json
 from pprint import pprint
 import os
 from ebaysdk.trading import Connection as Trading
@@ -11,9 +12,17 @@ response = api.execute('GetMyeBaySelling', {
         'Include': True
     }
 })
-# pprint(response.dict())
+with open('items.json', 'w') as fp:
+    json.dump(response.dict(), fp, indent=2)
+
+
 items = response.reply.ActiveList.ItemArray.Item
-print('Got %d active list items\n' % len(items))
+print('Got %d active list items' % len(items))
+
+pagination_result = response.reply.ActiveList.PaginationResult
+print('%s total items' % pagination_result.TotalNumberOfEntries)
+print('%s total pages' % pagination_result.TotalNumberOfPages)
+print()
 
 print('First item:')
 item = items[0]
