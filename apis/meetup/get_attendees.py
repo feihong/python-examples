@@ -1,3 +1,17 @@
+"""
+The endpoint used in this example only works with events that have already
+started. If you try to use it on an event that hasn't yet started yet, you'll
+get an error:
+
+    "errors": [
+        {
+          "message": "Event must have started",
+          "code": "event_time_error"
+        }
+    ]
+
+"""
+
 import json
 import os
 from urllib.parse import urlencode
