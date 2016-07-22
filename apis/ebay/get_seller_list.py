@@ -28,5 +28,5 @@ response = api.execute('GetSellerList', {
         'ItemArray.Item.Storefront',
     ]
 })
-with open('items.json', 'w') as fp:
+with open('item_categories.json', 'w') as fp:
     json.dump(response.dict(), fp, indent=2)
