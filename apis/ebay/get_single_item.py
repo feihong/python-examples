@@ -1,3 +1,4 @@
+import json
 from pprint import pprint
 import os
 from ebaysdk.shopping import Connection as Shopping
@@ -8,9 +9,11 @@ api = Shopping(config_file=None, **credentials)
 
 response = api.execute('GetSingleItem', {
     'ItemID': 171992581889,
-    'IncludeSelector': 'ItemSpecifics'
+    'IncludeSelector': 'ItemSpecifics',
+    # 'IncludeSelector': 'Details',     # will not include ItemSpecifics field
 })
-# pprint(response.dict())
+with open('item.json', 'w') as fp:
+    json.dump(response.dict(), fp, indent=2)
 
 item = response.reply.Item
 item_specifics = item.ItemSpecifics.NameValueList
