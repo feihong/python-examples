@@ -11,7 +11,29 @@
 
 
 <h2>Using Ajax</h2>
-<form enctype="multipart/form-data">
+<form class='ajax' enctype="multipart/form-data">
     <input name="upload" type="file" value="" />
     <input type="submit" value="submit" />
 </form>
+
+<script src='https://code.jquery.com/jquery-3.0.0.min.js'></script>
+<script>
+'use strict';
+
+$('form.ajax').on('submit', (evt) => {
+  evt.preventDefault()
+  let files = $(evt.target).find('input[type=file]')[0].files
+  
+  let fd = new FormData()
+  fd.append('ajax_upload', files[0])
+
+  let xhr = new XMLHttpRequest()
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      console.log(xhr.responseText)
+    }
+  }
+  xhr.open("POST", "/upload-using-ajax/")
+  xhr.send(fd)
+})
+</script>

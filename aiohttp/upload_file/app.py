@@ -22,9 +22,10 @@ async def upload_using_form(request):
 
 
 async def upload_using_ajax(request):
-    data = await request.read()
-    print('Size: %d' % len(data))
-    return web.Response(text='file uploaded', content_type='text/html')
+    data = await request.post()
+    print(data['ajax_upload'].filename)
+    print(data['ajax_upload'].content_type)
+    return web.Response(text='file uploaded via ajax', content_type='text/plain')
 
 
 if __name__ == '__main__':
