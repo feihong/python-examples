@@ -2,8 +2,16 @@
 
 <h1>File Upload</h1>
 
-<form action="/upload/" method="post" accept-charset="utf-8"
+<h2>Using form</h2>
+<form action="/upload-using-form/" method="post" accept-charset="utf-8"
       enctype="multipart/form-data">
+    <input name="upload" type="file" value="" />
+    <input type="submit" value="submit" />
+</form>
+
+
+<h2>Using Ajax</h2>
+<form enctype="multipart/form-data">
     <input name="upload" type="file" value="" />
     <input type="submit" value="submit" />
 </form>
