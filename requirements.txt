@@ -5,6 +5,7 @@ geopy
 ipdb
 hanzidentifier
 Mako
+muffin
 nose
 npyscreen
 Plim
