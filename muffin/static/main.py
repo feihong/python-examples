@@ -31,6 +31,7 @@ class CustomStaticRoute(StaticRoute):
             request.logger.exception(error)
             raise HTTPNotFound() from error
 
+        # Handle .plim files.
         if filepath.is_dir():
             filepath = filepath / 'index.plim'
             if not filepath.exists():
@@ -38,6 +39,9 @@ class CustomStaticRoute(StaticRoute):
             else:
                 resp = yield from self.render_plim(request, filepath)
                 return resp
+        if filepath.suffix == '.plim':
+            resp = yield from self.render_plim(request, filepath)
+            return resp
 
         if filepath.suffix == '.pyj':
             resp = yield from self.compile_rapydscript(request, filepath)
