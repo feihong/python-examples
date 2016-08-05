@@ -36,11 +36,7 @@ class CustomStaticRoute(StaticRoute):
             if not filepath.exists():
                 raise HTTPNotFound()
             else:
-                resp = self._response_factory()
-                resp.content_type = 'text/html'
-                resp.content_length = filepath.stat().st_size
-                yield from resp.prepare(request)
-                resp.write(filepath.read_bytes())
+                resp = yield from render(request, self._response_factory, filepath)
                 return resp
 
         st = filepath.stat()
@@ -73,6 +69,22 @@ class CustomStaticRoute(StaticRoute):
             resp.set_tcp_nodelay(True)
 
         return resp
+
+
+@asyncio.coroutine
+def render(request, resp_cls, tmplfile):
+    from mako.template import Template
+    from plim import preprocessor
+
+    resp = resp_cls()
+    resp.content_type = 'text/html'
+    yield from resp.prepare(request)
+
+    tmpl = Template(filename=str(tmplfile), preprocessor=preprocessor)
+    output = tmpl.render().encode('utf-8')
+    resp.content_length = len(output)
+    resp.write(output)
+    return resp
 
 
 route = CustomStaticRoute(None, '/', '.')
