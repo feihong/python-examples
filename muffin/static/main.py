@@ -39,6 +39,10 @@ class CustomStaticRoute(StaticRoute):
                 resp = yield from render(request, self._response_factory, filepath)
                 return resp
 
+        if filepath.suffix == '.pyj':
+            resp = yield from compile_rapydscript(request, self._response_factory, filepath)
+            return resp
+
         st = filepath.stat()
 
         modsince = request.if_modified_since
@@ -86,6 +90,18 @@ async def render(request, resp_cls, tmplfile):
         lookup=lookup,
         preprocessor=preprocessor)
     output = tmpl.render().encode('utf-8')
+    resp.content_length = len(output)
+    resp.write(output)
+    return resp
+
+
+async def compile_rapydscript(request, resp_cls, pyjfile):
+    resp = resp_cls()
+    resp.content_type = 'text/javascript'
+    await resp.prepare(request)
+
+    cmd =  ['rapydscript', str(pyjfile)]
+    output = subprocess.check_output(cmd)
     resp.content_length = len(output)
     resp.write(output)
     return resp

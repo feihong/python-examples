@@ -1,0 +1,3 @@
+
+mesg = str.format('Hello {name}', name='Feihong')
+print(mesg)
