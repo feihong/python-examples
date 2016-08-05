@@ -1,3 +1,4 @@
+import sys
 import subprocess
 import mimetypes
 
@@ -8,12 +9,17 @@ import muffin
 from muffin.urls import StaticRoute, StaticResource
 
 
-app = muffin.Application('example')
+class ExampleApplication(muffin.Application):
+    def __init__(self):
+        super().__init__('example')
 
+    def run(self):
+        route = CustomStaticRoute(None, '/', '.')
+        resource = StaticResource(route)
+        self.router._reg_resource(resource)
 
-@app.register('/hello/')
-def hello(request):
-    return 'Hello World!'
+        sys.argv = ['', 'run', '--bind=127.0.0.1:8000', '--reload']
+        app.manage()
 
 
 class CustomStaticRoute(StaticRoute):
@@ -109,12 +115,6 @@ class CustomStaticRoute(StaticRoute):
         return resp
 
 
-route = CustomStaticRoute(None, '/', '.')
-resource = StaticResource(route)
-app.router._reg_resource(resource)
-
-
 if __name__ == '__main__':
-    import sys
-    sys.argv = ['', 'run', '--bind=127.0.0.1:8000', '--reload']
-    app.manage()
+    app = ExampleApplication()
+    app.run()
