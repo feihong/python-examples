@@ -71,16 +71,20 @@ class CustomStaticRoute(StaticRoute):
         return resp
 
 
-@asyncio.coroutine
-def render(request, resp_cls, tmplfile):
+async def render(request, resp_cls, tmplfile):
     from mako.template import Template
+    from mako.lookup import TemplateLookup
     from plim import preprocessor
 
     resp = resp_cls()
     resp.content_type = 'text/html'
-    yield from resp.prepare(request)
+    await resp.prepare(request)
 
-    tmpl = Template(filename=str(tmplfile), preprocessor=preprocessor)
+    lookup = TemplateLookup(directories=['.'], preprocessor=preprocessor)
+    tmpl = Template(
+        text=tmplfile.read_text(),
+        lookup=lookup,
+        preprocessor=preprocessor)
     output = tmpl.render().encode('utf-8')
     resp.content_length = len(output)
     resp.write(output)

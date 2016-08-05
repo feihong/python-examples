@@ -1,0 +1,10 @@
+-inherit base.plim
+
+-block title
+  Home
+
+-block body
+  .container
+    h1 Home
+
+    p Cool page, bro
