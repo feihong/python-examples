@@ -2,6 +2,7 @@ import subprocess
 import mimetypes
 
 import asyncio
+from aiohttp import hdrs
 from aiohttp.web_exceptions import HTTPNotFound, HTTPNotModified
 import muffin
 from muffin.urls import StaticRoute, StaticResource
@@ -29,6 +30,18 @@ class CustomStaticRoute(StaticRoute):
             # perm error or other kind!
             request.logger.exception(error)
             raise HTTPNotFound() from error
+
+        if filepath.is_dir():
+            filepath = filepath / 'index.plim'
+            if not filepath.exists():
+                raise HTTPNotFound()
+            else:
+                resp = self._response_factory()
+                resp.content_type = 'text/html'
+                resp.content_length = filepath.stat().st_size
+                yield from resp.prepare(request)
+                resp.write(filepath.read_bytes())
+                return resp
 
         st = filepath.stat()
 
@@ -60,7 +73,6 @@ class CustomStaticRoute(StaticRoute):
             resp.set_tcp_nodelay(True)
 
         return resp
-
 
 
 route = CustomStaticRoute(None, '/', '.')
