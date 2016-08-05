@@ -36,11 +36,11 @@ class CustomStaticRoute(StaticRoute):
             if not filepath.exists():
                 raise HTTPNotFound()
             else:
-                resp = yield from render(request, self._response_factory, filepath)
+                resp = yield from self.render_plim(request, filepath)
                 return resp
 
         if filepath.suffix == '.pyj':
-            resp = yield from compile_rapydscript(request, self._response_factory, filepath)
+            resp = yield from self.compile_rapydscript(request, filepath)
             return resp
 
         st = filepath.stat()
@@ -74,37 +74,35 @@ class CustomStaticRoute(StaticRoute):
 
         return resp
 
+    async def render_plim(self, request, tmplfile):
+        from mako.template import Template
+        from mako.lookup import TemplateLookup
+        from plim import preprocessor
 
-async def render(request, resp_cls, tmplfile):
-    from mako.template import Template
-    from mako.lookup import TemplateLookup
-    from plim import preprocessor
+        resp = self._response_factory()
+        resp.content_type = 'text/html'
+        await resp.prepare(request)
 
-    resp = resp_cls()
-    resp.content_type = 'text/html'
-    await resp.prepare(request)
+        lookup = TemplateLookup(directories=['.'], preprocessor=preprocessor)
+        tmpl = Template(
+            text=tmplfile.read_text(),
+            lookup=lookup,
+            preprocessor=preprocessor)
+        output = tmpl.render().encode('utf-8')
+        resp.content_length = len(output)
+        resp.write(output)
+        return resp
 
-    lookup = TemplateLookup(directories=['.'], preprocessor=preprocessor)
-    tmpl = Template(
-        text=tmplfile.read_text(),
-        lookup=lookup,
-        preprocessor=preprocessor)
-    output = tmpl.render().encode('utf-8')
-    resp.content_length = len(output)
-    resp.write(output)
-    return resp
+    async def compile_rapydscript(self, request, pyjfile):
+        resp = self._response_factory()
+        resp.content_type = 'text/javascript'
+        await resp.prepare(request)
 
-
-async def compile_rapydscript(request, resp_cls, pyjfile):
-    resp = resp_cls()
-    resp.content_type = 'text/javascript'
-    await resp.prepare(request)
-
-    cmd =  ['rapydscript', str(pyjfile)]
-    output = subprocess.check_output(cmd)
-    resp.content_length = len(output)
-    resp.write(output)
-    return resp
+        cmd =  ['rapydscript', str(pyjfile)]
+        output = subprocess.check_output(cmd)
+        resp.content_length = len(output)
+        resp.write(output)
+        return resp
 
 
 route = CustomStaticRoute(None, '/', '.')
