@@ -96,7 +96,7 @@ class CustomStaticRoute(StaticRoute):
         await resp.prepare(request)
 
         lookup = TemplateLookup(
-            directories=['.', str(here)], 
+            directories=['.', str(here)],
             preprocessor=preprocessor)
         tmpl = Template(
             text=tmplfile.read_text(),
@@ -117,6 +117,3 @@ class CustomStaticRoute(StaticRoute):
         resp.content_length = len(output)
         resp.write(output)
         return resp
-
-
-app = ExampleApplication()
