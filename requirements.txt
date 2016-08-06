@@ -16,3 +16,4 @@ requests
 Tornado
 urwid
 watchdog
+-e ./muffin_example
