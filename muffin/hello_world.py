@@ -1,13 +1,13 @@
 """
 To run:
 
-muffin hello_world run --reload
+muffin hello_world run
 
 """
 import muffin
 
 
-app = muffin.Application('example')
+app = muffin.Application('example', DEBUG=True)
 
 
 @app.register('/', '/hello/{name}')
