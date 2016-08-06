@@ -3,11 +3,22 @@
 -block title
   Home
 
+-block extrahead
+  link rel='stylesheet' href='styles.styl'
+
 -block extrascript
   script src='main.pyj'
 
 -block body
   .container
-    h1 Home
+    h1 Long-running task
 
-    p Cool page, bro
+    p Start, stop, and view progress of a long-running task.
+
+    p.buttons
+      button Start
+      button Stop
+
+    .progress-container
+      .percent 0%
+      progress value=0 max=100
