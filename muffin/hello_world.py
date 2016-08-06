@@ -14,7 +14,3 @@ app = muffin.Application('example', DEBUG=True)
 def hello(request):
     name = request.match_info.get('name', 'anonymous')
     return 'Hello %s!' % name
-
-
-if __name__ == '__main__':
-    app.manage()

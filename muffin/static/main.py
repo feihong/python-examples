@@ -11,15 +11,13 @@ from muffin.urls import StaticRoute, StaticResource
 
 class ExampleApplication(muffin.Application):
     def __init__(self):
-        super().__init__('example')
+        super().__init__('example', DEBUG=True)
+        self.register_static_resource()
 
-    def run(self):
+    def register_static_resource(self):
         route = CustomStaticRoute(None, '/', '.')
         resource = StaticResource(route)
         self.router._reg_resource(resource)
-
-        sys.argv = ['', 'run', '--bind=127.0.0.1:8000', '--reload']
-        app.manage()
 
 
 class CustomStaticRoute(StaticRoute):
@@ -115,6 +113,4 @@ class CustomStaticRoute(StaticRoute):
         return resp
 
 
-if __name__ == '__main__':
-    app = ExampleApplication()
-    app.run()
+app = ExampleApplication()
