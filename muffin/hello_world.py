@@ -1,3 +1,9 @@
+"""
+To run:
+
+muffin hello_world run --reload
+
+"""
 import muffin
 
 
@@ -11,6 +17,4 @@ def hello(request):
 
 
 if __name__ == '__main__':
-    import sys
-    sys.argv = ['', 'run', '--bind=127.0.0.1:8000', '--reload']
     app.manage()
