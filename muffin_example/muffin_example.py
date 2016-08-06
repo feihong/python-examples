@@ -1,12 +1,16 @@
 import sys
 import subprocess
 import mimetypes
+from pathlib import Path
 
 import asyncio
 from aiohttp import hdrs
 from aiohttp.web_exceptions import HTTPNotFound, HTTPNotModified
 import muffin
 from muffin.urls import StaticRoute, StaticResource
+
+
+here = Path(__file__).parent
 
 
 class ExampleApplication(muffin.Application):
@@ -91,7 +95,9 @@ class CustomStaticRoute(StaticRoute):
         resp.content_type = 'text/html'
         await resp.prepare(request)
 
-        lookup = TemplateLookup(directories=['.'], preprocessor=preprocessor)
+        lookup = TemplateLookup(
+            directories=['.', str(here)], 
+            preprocessor=preprocessor)
         tmpl = Template(
             text=tmplfile.read_text(),
             lookup=lookup,
