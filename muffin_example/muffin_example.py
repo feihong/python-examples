@@ -51,9 +51,14 @@ class CustomStaticRoute(StaticRoute):
             resp = yield from self.render_plim(request, filepath)
             return resp
 
+        # Handle RapydScript files.
         if filepath.suffix == '.pyj':
             resp = yield from self.compile_rapydscript(request, filepath)
             return resp
+
+        # Handle RapydScript files.
+        if filepath.suffix == '.styl':
+            return (yield from self.compile_stylus(request, filepath))
 
         st = filepath.stat()
 
@@ -107,12 +112,23 @@ class CustomStaticRoute(StaticRoute):
         resp.write(output)
         return resp
 
-    async def compile_rapydscript(self, request, pyjfile):
+    async def compile_rapydscript(self, request, pyj_file):
         resp = self._response_factory()
         resp.content_type = 'text/javascript'
         await resp.prepare(request)
 
-        cmd =  ['rapydscript', str(pyjfile)]
+        cmd =  ['rapydscript', str(pyj_file)]
+        output = subprocess.check_output(cmd)
+        resp.content_length = len(output)
+        resp.write(output)
+        return resp
+
+    async def compile_stylus(self, request, stylus_file):
+        resp = self._response_factory()
+        resp.content_type = 'text/css'
+        await resp.prepare(request)
+
+        cmd =  ['stylus', '-p', str(stylus_file)]
         output = subprocess.check_output(cmd)
         resp.content_length = len(output)
         resp.write(output)
