@@ -15,5 +15,11 @@ client = boto3.client('sns')
 resp = client.publish(
     PhoneNumber=os.environ['SMS_NUMBER'],
     Message='This message was sent via the API',
+    MessageAttributes={
+        'SMSType': {
+            'StringValue': 'Promotional',
+            'DataType': 'String',
+        }
+    }
 )
 pprint(resp)
