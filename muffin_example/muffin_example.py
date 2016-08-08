@@ -117,7 +117,11 @@ class CustomStaticRoute(StaticRoute):
         resp.content_type = 'text/javascript'
         await resp.prepare(request)
 
-        cmd =  ['rapydscript', str(pyj_file)]
+        cmd =  [
+            'rapydscript', str(pyj_file),
+            '-j', '6',
+            '-p', str(here),
+        ]
         output = subprocess.check_output(cmd)
         resp.content_length = len(output)
         resp.write(output)
