@@ -147,3 +147,13 @@ class WebSocketWriter:
     def write(self, **kwargs):
         # print(kwargs)
         self.resp.send_str(json.dumps(kwargs))
+
+
+class ThreadSafeWebSocketWriter:
+    def __init__(self, wsresponse):
+        self.resp = wsresponse
+        self.loop = asyncio.get_event_loop()
+
+    def write(self, **kwargs):
+        data = json.dumps(kwargs)
+        self.loop.call_soon_threadsafe(self.resp.send_str, data)
