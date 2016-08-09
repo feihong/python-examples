@@ -1,4 +1,5 @@
 import sys
+import json
 import subprocess
 import mimetypes
 from pathlib import Path
@@ -137,3 +138,12 @@ class CustomStaticRoute(StaticRoute):
         resp.content_length = len(output)
         resp.write(output)
         return resp
+
+
+class WebSocketWriter:
+    def __init__(self, wsresponse):
+        self.resp = wsresponse
+
+    def write(self, **kwargs):
+        # print(kwargs)
+        self.resp.send_str(json.dumps(kwargs))
