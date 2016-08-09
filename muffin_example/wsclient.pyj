@@ -1,6 +1,3 @@
-from __python__ import bound_methods
-
-
 @external
 class WebSocket:
     pass
@@ -15,9 +12,9 @@ class WsClient:
         if str.startswith(url, '/'):
             url = 'ws://' + document.location.host + url
         ws = WebSocket(url)
-        ws.onopen = self.on_open
-        ws.onclose = self.on_close
-        ws.onmessage = self._on_message
+        ws.onopen = self.on_open.bind(self)
+        ws.onclose = self.on_close.bind(self)
+        ws.onmessage = self._on_message.bind(self)
         self.ws = ws
 
     def on_open(self, evt):
@@ -39,6 +36,9 @@ class WsClient:
 
     def send(self, obj):
         self.ws.send(JSON.stringify(obj))
+
+    def send_text(self, text):
+        self.ws.send(text)
 
     def on_object(self, obj):
         raise NotImplementedError()
