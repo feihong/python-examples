@@ -1,7 +1,7 @@
 -inherit boilerplate.plim
 
 -block title
-  Home
+  Asynchronous task
 
 -block extrahead
   link rel='stylesheet' href='styles.styl'
@@ -16,8 +16,8 @@
     p Start, stop, and view progress of a long-running task.
 
     p.buttons
-      button Start
-      button Stop
+      button.btn.btn-default.start Start
+      button.btn.btn-default.stop Stop
 
     .progress-container
       .percent 0%
