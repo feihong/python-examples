@@ -1,42 +1,39 @@
 import json
 import asyncio
 import muffin
-from muffin_example import ExampleApplication, WebSocketWriter
+from muffin_example import Application, WebSocketHandler, WebSocketWriter
 
 
-app = ExampleApplication()
+app = Application()
 app.register_static_resource()
 
 
 @app.register('/websocket/')
-async def websocket(request):
-    ws = muffin.WebSocketResponse()
-    await ws.prepare(request)
-    print('Websocket opened')
+class WSHandler(WebSocketHandler):
+    async def on_open(self):
+        print('Web socket opened')
+        self.task = None
 
-    task = None
+    async def on_close(self):
+        print('Web socket closed')
 
-    async for msg in ws:
+    async def on_message(self, msg):
         print(msg)
-        if msg.data == 'start' and not task:
-            coroutine = long_task(WebSocketWriter(ws))
-            task = asyncio.ensure_future(coroutine)
-            def done(future):
-                nonlocal task
-                task = None
-            task.add_done_callback(done)
-        elif msg.data == 'stop' and task:
-            task.cancel()
-            task = None
+        if msg.data == 'start' and not self.task:
+            coroutine = long_task(WebSocketWriter(self.ws))
+            self.task = asyncio.ensure_future(coroutine)
+            self.task.add_done_callback(self.done_callback)
+        elif msg.data == 'stop' and self.task:
+            self.task.cancel()
+            self.task = None
 
-    await ws.close()
-    print('Websocket closed')
-
-    return ws
+    def done_callback(self, future):
+        self.task = None
 
 
 async def long_task(writer):
     total = 150
     for i in range(1, total+1):
         writer.write(type='progress', value=i, total=total)
+        print(i)
         await asyncio.sleep(0.05)
