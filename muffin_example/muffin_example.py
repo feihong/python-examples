@@ -160,7 +160,7 @@ class WebSocketHandler(muffin.Handler):
     async def get(self, request):
         self.request = request
         ws = muffin.WebSocketResponse()
-        self.ws = ws
+        self.websocket = ws
         await ws.prepare(request)
         await self.on_open()
 

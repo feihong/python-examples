@@ -20,7 +20,7 @@ class WSHandler(WebSocketHandler):
     async def on_message(self, msg):
         print(msg)
         if msg.data == 'start' and not self.task:
-            coroutine = long_task(WebSocketWriter(self.ws))
+            coroutine = long_task(WebSocketWriter(self.websocket))
             self.task = asyncio.ensure_future(coroutine)
             self.task.add_done_callback(self.done_callback)
         elif msg.data == 'stop' and self.task:

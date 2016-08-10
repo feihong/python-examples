@@ -2,39 +2,37 @@ import json
 import asyncio
 import threading
 import muffin
-from muffin_example import ExampleApplication, ThreadSafeWebSocketWriter
+from muffin_example import Application, WebSocketHandler, ThreadSafeWebSocketWriter
 
 
-app = ExampleApplication()
+app = Application()
 app.register_static_resource()
 
 
 @app.register('/websocket/')
-async def websocket(request):
-    ws = muffin.WebSocketResponse()
-    await ws.prepare(request)
-    print('Websocket opened')
+class WSHandler(WebSocketHandler):
+    async def on_open(self):
+        self.task = None
+        self.stop_event = threading.Event()
 
-    stop_event = threading.Event()
-    task = None
-    def done(future):
-        print('done!')
-        nonlocal task
-        task = None
-        stop_event.clear()
-
-    async for msg in ws:
+    async def on_message(self, msg):
         print(msg)
-        if msg.data == 'start' and not task:
-            task = execute_task(long_task, ThreadSafeWebSocketWriter(ws), stop_event)
-            task.add_done_callback(done)
-        elif msg.data == 'stop' and task:
-            stop_event.set()
+        if msg.data == 'start' and not self.task:
+            self.task = self.execute_task(
+                long_task, ThreadSafeWebSocketWriter(self.websocket), self.stop_event)
+            self.task.add_done_callback(self.done_callback)
+        elif msg.data == 'stop' and self.task:
+            self.stop_event.set()
 
-    await ws.close()
-    print('Websocket closed')
+    def done_callback(self, future):
+        print('done!')
+        self.task = None
+        self.stop_event.clear()
 
-    return ws
+    def execute_task(self, fn, *args):
+        loop = asyncio.get_event_loop()
+        coroutine = loop.run_in_executor(None, fn, *args)
+        return asyncio.ensure_future(coroutine)
 
 
 def long_task(writer, stop_event):
@@ -45,10 +43,5 @@ def long_task(writer, stop_event):
         if stop_event.is_set():
             return
         writer.write(type='progress', value=i, total=total)
+        print(i)
         time.sleep(0.05)
-
-
-def execute_task(fn, *args):
-    loop = asyncio.get_event_loop()
-    coroutine = loop.run_in_executor(None, fn, *args)
-    return asyncio.ensure_future(coroutine)
