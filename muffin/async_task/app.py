@@ -5,6 +5,7 @@ from muffin_example import ExampleApplication, WebSocketWriter
 
 
 app = ExampleApplication()
+app.register_static_resource()
 
 
 @app.register('/websocket/')

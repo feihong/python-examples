@@ -6,6 +6,7 @@ from muffin_example import ExampleApplication, ThreadSafeWebSocketWriter
 
 
 app = ExampleApplication()
+app.register_static_resource()
 
 
 @app.register('/websocket/')

@@ -22,8 +22,7 @@ lookup = TemplateLookup(
 
 class ExampleApplication(muffin.Application):
     def __init__(self):
-        super().__init__('example', DEBUG=True)
-        self.register_static_resource()
+        super().__init__(name='example', DEBUG=True)
 
     def register_static_resource(self):
         route = CustomStaticRoute(None, '/', '.')
@@ -31,6 +30,8 @@ class ExampleApplication(muffin.Application):
         self.router._reg_resource(resource)
 
     def render(self, tmpl_file, **kwargs):
+        if not isinstance(tmpl_file, Path):
+            tmpl_file = Path(tmpl_file)
         return render(tmpl_file, **kwargs)
 
 
