@@ -20,7 +20,7 @@ lookup = TemplateLookup(
     preprocessor=preprocessor)
 
 
-class ExampleApplication(muffin.Application):
+class Application(muffin.Application):
     def __init__(self):
         super().__init__(name='example', DEBUG=True)
 
@@ -141,7 +141,8 @@ class WebSocketWriter:
 
     def write(self, **kwargs):
         # print(kwargs)
-        self.resp.send_str(json.dumps(kwargs))
+        if not self.resp.closed:
+            self.resp.send_str(json.dumps(kwargs))
 
 
 class ThreadSafeWebSocketWriter:
@@ -150,8 +151,34 @@ class ThreadSafeWebSocketWriter:
         self.loop = asyncio.get_event_loop()
 
     def write(self, **kwargs):
-        data = json.dumps(kwargs)
-        self.loop.call_soon_threadsafe(self.resp.send_str, data)
+        if not self.resp.closed:
+            data = json.dumps(kwargs)
+            self.loop.call_soon_threadsafe(self.resp.send_str, data)
+
+
+class WebSocketHandler(muffin.Handler):
+    async def get(self, request):
+        self.request = request
+        ws = muffin.WebSocketResponse()
+        self.ws = ws
+        await ws.prepare(request)
+        await self.on_open()
+
+        async for msg in ws:
+            await self.on_message(msg)
+
+        await self.on_close()
+        await ws.close()
+        return ws
+
+    async def on_message(self, msg):
+        pass
+
+    async def on_open(self):
+        pass
+
+    async def on_close(self):
+        pass
 
 
 def render(tmpl_file, **kwargs):
