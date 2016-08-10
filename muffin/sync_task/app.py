@@ -14,7 +14,6 @@ async def websocket(request):
     await ws.prepare(request)
     print('Websocket opened')
 
-    loop = asyncio.get_event_loop()
     stop_event = threading.Event()
     task = None
     def done(future):
@@ -26,9 +25,7 @@ async def websocket(request):
     async for msg in ws:
         print(msg)
         if msg.data == 'start' and not task:
-            coroutine = loop.run_in_executor(
-                None, long_task, ThreadSafeWebSocketWriter(ws), stop_event)
-            task = asyncio.ensure_future(coroutine)
+            task = execute_task(long_task, ThreadSafeWebSocketWriter(ws), stop_event)
             task.add_done_callback(done)
         elif msg.data == 'stop' and task:
             stop_event.set()
@@ -48,3 +45,9 @@ def long_task(writer, stop_event):
             return
         writer.write(type='progress', value=i, total=total)
         time.sleep(0.05)
+
+
+def execute_task(fn, *args):
+    loop = asyncio.get_event_loop()
+    coroutine = loop.run_in_executor(None, fn, *args)
+    return asyncio.ensure_future(coroutine)

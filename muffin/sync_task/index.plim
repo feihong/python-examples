@@ -1,7 +1,7 @@
 -inherit boilerplate.plim
 
 -block title
-  Asynchronous task
+  Synchronous task
 
 -block extrahead
   link rel='stylesheet' href='styles.styl'
@@ -11,9 +11,9 @@
 
 -block body
   .container
-    h1 Long-running task
+    h1 = title()
 
-    p Start, stop, and view progress of a long-running task.
+    p Start, stop, and view progress of a long-running synchronous task.
 
     p.buttons
       button.btn.btn-default.start Start
