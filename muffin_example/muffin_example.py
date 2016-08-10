@@ -9,9 +9,15 @@ from aiohttp import hdrs
 from aiohttp.web_exceptions import HTTPNotFound, HTTPNotModified
 import muffin
 from muffin.urls import StaticRoute, StaticResource
+from mako.template import Template
+from mako.lookup import TemplateLookup
+from plim import preprocessor
 
 
 here = Path(__file__).parent
+lookup = TemplateLookup(
+    directories=['.', str(here)],
+    preprocessor=preprocessor)
 
 
 class ExampleApplication(muffin.Application):
@@ -23,6 +29,9 @@ class ExampleApplication(muffin.Application):
         route = CustomStaticRoute(None, '/', '.')
         resource = StaticResource(route)
         self.router._reg_resource(resource)
+
+    def render(self, tmpl_file, **kwargs):
+        return render(tmpl_file, **kwargs)
 
 
 class CustomStaticRoute(StaticRoute):
@@ -46,16 +55,13 @@ class CustomStaticRoute(StaticRoute):
             if not filepath.exists():
                 raise HTTPNotFound()
             else:
-                resp = yield from self.render_plim(request, filepath)
-                return resp
+                return (yield from self.render_plim(request, filepath))
         if filepath.suffix == '.plim':
-            resp = yield from self.render_plim(request, filepath)
-            return resp
+            return (yield from self.render_plim(request, filepath))
 
         # Handle RapydScript files.
         if filepath.suffix == '.pyj':
-            resp = yield from self.compile_rapydscript(request, filepath)
-            return resp
+            return (yield from self.compile_rapydscript(request, filepath))
 
         # Handle RapydScript files.
         if filepath.suffix == '.styl':
@@ -92,23 +98,11 @@ class CustomStaticRoute(StaticRoute):
 
         return resp
 
-    async def render_plim(self, request, tmplfile):
-        from mako.template import Template
-        from mako.lookup import TemplateLookup
-        from plim import preprocessor
-
+    async def render_plim(self, request, tmpl_file):
         resp = self._response_factory()
         resp.content_type = 'text/html'
         await resp.prepare(request)
-
-        lookup = TemplateLookup(
-            directories=['.', str(here)],
-            preprocessor=preprocessor)
-        tmpl = Template(
-            text=tmplfile.read_text(),
-            lookup=lookup,
-            preprocessor=preprocessor)
-        output = tmpl.render().encode('utf-8')
+        output = render(tmpl_file).encode('utf-8')
         resp.content_length = len(output)
         resp.write(output)
         return resp
@@ -157,3 +151,11 @@ class ThreadSafeWebSocketWriter:
     def write(self, **kwargs):
         data = json.dumps(kwargs)
         self.loop.call_soon_threadsafe(self.resp.send_str, data)
+
+
+def render(tmpl_file, **kwargs):
+    tmpl = Template(
+        text=tmpl_file.read_text(),
+        lookup=lookup,
+        preprocessor=preprocessor)
+    return tmpl.render(**kwargs)
