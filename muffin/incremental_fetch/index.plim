@@ -1,0 +1,20 @@
+-inherit boilerplate.plim
+
+-block title
+  Incremental fetch
+
+-block extrahead
+  link rel='stylesheet' href='styles.styl'
+
+-block extrascript
+  script src='main.pyj'
+
+-block body
+  .container
+    h1 = title()
+
+    p Incrementally fetch data inside the web socket handler.
+
+    .results-container
+      -for result in results
+        .result = result
