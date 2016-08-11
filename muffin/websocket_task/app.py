@@ -2,19 +2,16 @@ import json
 import asyncio
 import threading
 import muffin
-from muffin_example import ExampleApplication, WebSocketWriter
+from muffin_example import Application, WebSocketWriter
 
 
-app = ExampleApplication()
+app = Application()
 
 
 @app.register('/')
 async def index(request):
-    resp = muffin.StreamResponse()
-    await resp.prepare(request)
     results = await fetch(1)
-    resp.write(app.render('index.plim', results=results).encode('utf-8'))
-    return resp
+    return app.render('index.plim', results=results)
 
 
 @app.register('/websocket/')
@@ -46,7 +43,7 @@ async def fetch(page):
     if page >= 11:
         return None
 
-    increment = 5
+    increment = 6
     start = (page - 1) * increment + 1
     end = start + increment
     await asyncio.sleep(1)
