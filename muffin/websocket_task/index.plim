@@ -1,7 +1,7 @@
 -inherit boilerplate.plim
 
 -block title
-  Incremental fetch
+  Web socket task
 
 -block extrahead
   link rel='stylesheet' href='styles.styl'
@@ -13,8 +13,9 @@
   .container
     h1 = title()
 
-    p Incrementally fetch data inside the web socket handler.
+    p Use a web socket handler to push multiple pieces of data to the client after initial page load.
 
-    .results-container
-      -for result in results
-        .result = result
+    .results
+      .result-row
+        -for result in results
+          .result = result
