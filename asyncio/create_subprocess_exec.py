@@ -22,3 +22,4 @@ async def run_subprocess():
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
+loop.close()        # prevents annoying signal handler error
