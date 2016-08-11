@@ -2,7 +2,7 @@ import json
 import asyncio
 import threading
 import muffin
-from muffin_example import Application, WebSocketHandler, ThreadSafeWebSocketWriter
+from muffin_playground import Application, WebSocketHandler, ThreadSafeWebSocketWriter
 
 
 app = Application()

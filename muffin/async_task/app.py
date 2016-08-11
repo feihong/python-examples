@@ -1,7 +1,7 @@
 import json
 import asyncio
 import muffin
-from muffin_example import Application, WebSocketHandler, WebSocketWriter
+from muffin_playground import Application, WebSocketHandler, WebSocketWriter
 
 
 app = Application()
