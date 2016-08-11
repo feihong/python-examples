@@ -1,12 +1,23 @@
 import asyncio
 
 
-async def count_to_n(n):
+async def main():
+    n = 8
     for i in range(1, n+1):
         await asyncio.sleep(1)
         print(i)
-    loop.stop()
+
+        # if i == 3:
+        #     asyncio.ensure_future(run_subprocess())
+
+
+async def run_subprocess():
+    print('Starting subprocess')
+    code = 'import time; time.sleep(3)'
+    proc = await asyncio.create_subprocess_exec('python', '-c', code)
+    await proc.wait()
+    print('Subprocess finished!')
+
 
 loop = asyncio.get_event_loop()
-asyncio.ensure_future(count_to_n(8))
-loop.run_forever()
+loop.run_until_complete(main())
