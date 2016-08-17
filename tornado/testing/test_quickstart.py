@@ -1,18 +1,19 @@
-import unittest
-from tornado.testing import AsyncHTTPTestCase
+import tornado.testing
 
 import app
 
 
-class TestHelloApp(AsyncHTTPTestCase):
+class TestHelloApp(tornado.testing.AsyncHTTPTestCase):
     def get_app(self):
-        return app.app
+        return app.get_app()
 
     def test_homepage(self):
         response = self.fetch('/')
         self.assertEqual(response.code, 200)
-        self.assertEqual(response.body, b'Hello World')
+        self.assertIn(b'Hello World', response.body)
 
 
 if __name__ == '__main__':
+    import unittest
     unittest.main()
+    # tornado.testing.main()
