@@ -1,3 +1,4 @@
+import tornado.gen
 from tornado.ioloop import IOLoop
 from tornado.web import Application, RequestHandler
 from tornado.websocket import WebSocketHandler
@@ -5,9 +6,10 @@ from tornado.websocket import WebSocketHandler
 
 def get_app():
     return Application([
-        (r'/', MainHandler),
+        (r'/', IndexHandler),
+        (r'/slow/', SlowHandler),
         (r'/websocket/', MyWSHandler),
-    ])
+    ], debug=True)
 
 
 INDEX_HTML = """
@@ -15,12 +17,13 @@ INDEX_HTML = """
 
 <input value='monkey'>
 <button>Send</button>
+<p></p>
 
 <script src='http://code.jquery.com/jquery-3.1.0.slim.min.js'></script>
 <script>
 var ws = new WebSocket('ws://' + window.location.host + '/websocket/')
 ws.onmessage = function(evt) {
-  console.log('Received: ' + evt.data)
+  $('p').text('Received: ' + evt.data)
 }
 function sendInput() {
   ws.send($('input').val())
@@ -35,9 +38,16 @@ $('button').on('click', sendInput)
 """
 
 
-class MainHandler(RequestHandler):
+class IndexHandler(RequestHandler):
     def get(self):
         self.write(INDEX_HTML)
+
+
+class SlowHandler(RequestHandler):
+    @tornado.gen.coroutine
+    def get(self):
+        yield tornado.gen.sleep(3)
+        self.write('Sorry for being so slow...')
 
 
 class MyWSHandler(WebSocketHandler):
