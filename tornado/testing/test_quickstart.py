@@ -17,9 +17,13 @@ class TestHelloApp(tornado.testing.AsyncHTTPTestCase):
     def test_websocket(self):
         url = 'ws://localhost:%s/websocket/' % self.get_http_port()
         conn = yield websocket_connect(url)
-        conn.write_message('hoo BOY 888 yeah DuDe')
+        conn.write_message('hoo BOY 888')
         msg = yield conn.read_message()
-        self.assertEqual(msg, 'HOO BOY 888 YEAH DUDE')
+        self.assertEqual(msg, 'HOO BOY 888')
+
+        conn.write_message('YeAh DuDe 蟒蛇')
+        msg = yield conn.read_message()
+        self.assertEqual(msg, 'YEAH DUDE 蟒蛇')
 
 
 if __name__ == '__main__':
