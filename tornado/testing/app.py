@@ -42,6 +42,7 @@ class MainHandler(RequestHandler):
 
 class MyWSHandler(WebSocketHandler):
     def on_message(self, message):
+        "Echo the message back in upper case"
         self.write_message(message.upper())
 
 
