@@ -14,7 +14,10 @@ class TestMyApp(tornado.testing.AsyncHTTPTestCase):
         self.assertIn(b'Hello World', response.body)
 
     def test_slow_page(self):
-        response = self.fetch('/slow/')
+        self.http_client.fetch(self.get_url('/slow/'), self.stop)
+        # Set this value to 3 or less to cause the test to fail.
+        timeout = 3.1
+        response = self.wait(timeout=timeout)
         self.assertEqual(response.code, 200)
         self.assertIn(b'Sorry for being so slow', response.body)
 
