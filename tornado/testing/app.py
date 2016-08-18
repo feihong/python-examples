@@ -4,12 +4,12 @@ from tornado.web import Application, RequestHandler
 from tornado.websocket import WebSocketHandler
 
 
-def get_app():
+def get_app(**settings):
     return Application([
         (r'/', IndexHandler),
         (r'/slow/', SlowHandler),
         (r'/websocket/', MyWSHandler),
-    ], debug=True)
+    ], **settings)
 
 
 INDEX_HTML = """
@@ -57,7 +57,7 @@ class MyWSHandler(WebSocketHandler):
 
 
 if __name__ == '__main__':
-    app = get_app()
+    app = get_app(debug=True)
     app.listen(8000)
     loop = IOLoop.current()
     loop.start()

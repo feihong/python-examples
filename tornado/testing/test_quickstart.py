@@ -4,7 +4,7 @@ from tornado.websocket import websocket_connect
 import app
 
 
-class TestHelloApp(tornado.testing.AsyncHTTPTestCase):
+class TestMyApp(tornado.testing.AsyncHTTPTestCase):
     def get_app(self):
         return app.get_app()
 
@@ -12,6 +12,11 @@ class TestHelloApp(tornado.testing.AsyncHTTPTestCase):
         response = self.fetch('/')
         self.assertEqual(response.code, 200)
         self.assertIn(b'Hello World', response.body)
+
+    def test_slow_page(self):
+        response = self.fetch('/slow/')
+        self.assertEqual(response.code, 200)
+        self.assertIn(b'Sorry for being so slow', response.body)
 
     @tornado.testing.gen_test
     def test_websocket(self):
