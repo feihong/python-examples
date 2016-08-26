@@ -2,6 +2,7 @@ import re
 import os
 import json
 from ebaysdk.trading import Connection as Trading
+from ebaysdk.shopping import Connection as Shopping
 
 
 ITEM_IDS = """\
@@ -24,9 +25,18 @@ LOCATIONS = ['Americas', 'Europe', 'Asia', 'GB', 'CN', 'MX', 'DE', 'JP', 'BR', '
 
 
 credentials = dict(zip(('appid', 'devid', 'certid', 'token'), os.environ['EBAY_PARAMS'].split(';')))
+shopping = Shopping(config_file=None, **credentials)
+trading = Trading(config_file=None, **credentials)
+
 
 for item_id in ITEM_IDS:
-    trading = Trading(config_file=None, **credentials)
+    response = shopping.execute('GetSingleItem', {
+        'ItemID': item_id,
+        'IncludeSelector': 'ItemSpecifics',
+    })
+    item_specifics = response.reply.Item.ItemSpecifics.NameValueList
+    model = [pair.Value for pair in item_specifics if pair.Name == 'Model'][0]
+
     response = trading.execute('GetItem', {
         'ItemID': item_id,
     })
@@ -65,8 +75,9 @@ for item_id in ITEM_IDS:
 
     shipping_str = '{us}/{us_add}, {ca}/{ca_add}, {intl}/{intl_add}'.format(**shipping)
 
-    print('{title}\t{url}\t{price}\t{shipping}'.format(
+    print('{title}\t{model}\t{url}\t{price}\t{shipping}'.format(
         title=item.Title,
+        model=model,
         url=item_url,
         price=item.StartPrice.value,
         shipping=shipping_str,
