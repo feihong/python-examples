@@ -6,6 +6,7 @@ ipdb
 hanzidentifier
 Mako
 muffin
+muffin-playground
 nose
 npyscreen
 Plim
@@ -16,4 +17,3 @@ requests
 Tornado
 urwid
 watchdog
--e ./muffin_example
