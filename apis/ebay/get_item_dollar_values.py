@@ -31,6 +31,7 @@ for item_id in ITEM_IDS:
         'ItemID': item_id,
     })
     item = response.reply.Item
+    item_url = 'http://www.ebay.com/itm/' + item_id
 
     shipping = {}
     options = item.ShippingDetails.ShippingServiceOptions
@@ -43,12 +44,19 @@ for item_id in ITEM_IDS:
     shipping['ca'] = option.ShippingServiceCost.value
     shipping['ca_add'] = option.ShippingServiceAdditionalCost.value
 
-    option = [o for o in options if o.ShipToLocation == LOCATIONS][0]
-    shipping['intl'] = option.ShippingServiceCost.value
-    shipping['intl_add'] = option.ShippingServiceAdditionalCost.value
+    try:
+        option = [o for o in options if o.ShipToLocation == LOCATIONS][0]
+        shipping['intl'] = option.ShippingServiceCost.value
+        shipping['intl_add'] = option.ShippingServiceAdditionalCost.value
+    except IndexError:
+        shipping['intl'] = '?'
+        shipping['intl_add'] = '?'
 
     for k in shipping.keys():
-        v = float(shipping[k])
+        try:
+            v = float(shipping[k])
+        except ValueError:
+            continue
         if v % 1:
             v = '%0.2f' % v
         else:
@@ -59,7 +67,7 @@ for item_id in ITEM_IDS:
 
     print('{title}\t{url}\t{price}\t{shipping}'.format(
         title=item.Title,
-        url='http://www.ebay.com/itm/' + item_id,
+        url=item_url,
         price=item.StartPrice.value,
         shipping=shipping_str,
     ))
