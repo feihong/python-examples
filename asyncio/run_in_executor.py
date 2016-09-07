@@ -16,6 +16,10 @@ async def main():
 
     future = loop.run_in_executor(None, func, 3)
     future.add_done_callback(done_callback)
+
+    await asyncio.sleep(0.01)
+    # future.cancel()    # will not stop execution of the already-running function
+
     print(future)
     await future
     print('end of main')
