@@ -1,3 +1,11 @@
+"""
+API reference:
+https://documentation.mailgun.com/api_reference.html
+
+According to the pricing page, your first 10k messages per month are free:
+http://www.mailgun.com/pricing
+
+"""
 import sys
 import os
 import datetime
