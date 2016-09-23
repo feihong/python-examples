@@ -1,4 +1,5 @@
 boto3
+easypost
 ebaysdk
 foursquare
 plivo
