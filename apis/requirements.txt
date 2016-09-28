@@ -3,5 +3,6 @@ easypost
 ebaysdk
 foursquare
 plivo
+postmen
 stamps.py
 yelp
