@@ -69,10 +69,8 @@ parcel = dict(
 )
 
 payload = dict(
-    ship_from=sender,
-    ship_to=receiver,
-    async=False,
     is_document=False,
+    async=False,
     shipper_accounts=[{'id': shipper_id}],
     shipment={
         'parcels': [parcel],
@@ -84,8 +82,9 @@ payload = dict(
 try:
     api = Postmen(api_key, region)
     result = api.create('rates', payload)
-except ex as PostmenException:
+    for rate in result['rates']:
+        print(rate['service_type'], rate['total_charge']['amount'])
+except PostmenException as ex:
     print(ex.code())
     print(ex.message())
     print(ex.details())
-    import ipdb; ipdb.set_trace()
