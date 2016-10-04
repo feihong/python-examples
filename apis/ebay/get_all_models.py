@@ -14,7 +14,6 @@ def get_item(item_id):
     return shopping.execute('GetSingleItem', {
         'ItemID': item_id,
         'IncludeSelector': 'ItemSpecifics',
-        # 'OutputSelector': '',
     })
 
 with open('item_ids.json') as fp:
@@ -23,11 +22,16 @@ with open('item_ids.json') as fp:
 model_dict = {}
 
 for item_dict in item_dicts:
-    item = get_item(item['item_id']).response.reply.Item
-    model = [spec.Value for spec in Item.ItemSpecifics.NameValueList if spec.Name == 'Model']
+    response = get_item(item_dict['id'])
+    print(response.reply.Item.ItemID)
+    model = [
+        spec.Value
+        for spec in response.reply.Item.ItemSpecifics.NameValueList
+        if spec.Name == 'Model'
+    ]
     model = model[0]
     if model not in model_dict:
-        model_dict[model = item_dict
+        model_dict[model] = item_dict
 
 model_list = list(model_dict.items())
 model_list.sort(key=lambda x: x[0])
