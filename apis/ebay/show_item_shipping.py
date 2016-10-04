@@ -8,4 +8,10 @@ api = Trading(config_file=None, **credentials)
 
 response = api.execute('GetItem', {'ItemID': 181926350758})
 # pprint(response.dict())
-print(response.reply.Item.ShippingPackageDetails)
+details = response.reply.Item.ShippingPackageDetails
+print(details)
+
+lb = int(details.WeightMajor.value)
+oz = int(details.WeightMinor.value)
+
+print('Item weights %d oz' % (16 * lb + oz))
