@@ -24,7 +24,10 @@ print('Domestic shipping service: {}'.format(
 
 print('International shipping services:')
 for option in sd.InternationalShippingServiceOption:
-    print('- {}'.format(option.ShippingService))
+    location = option.ShipToLocation
+    if isinstance(location, list):
+        location = ','.join(location)
+    print('- {}: {}'.format(location, option.ShippingService))
 
 spd = item.ShippingPackageDetails
 
