@@ -1,5 +1,5 @@
-from pprint import pprint
 import os
+import json
 from ebaysdk.trading import Connection as Trading
 
 
@@ -7,5 +7,25 @@ credentials = dict(zip(('appid', 'devid', 'certid', 'token'), os.environ['EBAY_P
 api = Trading(config_file=None, **credentials)
 
 response = api.execute('GetItem', {'ItemID': 181926350758})
-# pprint(response.dict())
-print(response.reply.Item.ShippingPackageDetails)
+with open('item.json', 'w') as fp:
+    json.dump(response.dict(), fp, indent=2)
+
+item = response.reply.Item
+print(item.Title)
+
+sd = item.ShippingDetails
+
+print('Domestic shipping service: {}'.format(
+    sd.ShippingServiceOptions.ShippingService
+))
+
+print('International shipping services:')
+for option in sd.InternationalShippingServiceOption:
+    print('- {}'.format(option.ShippingService))
+
+spd = item.ShippingPackageDetails
+
+print('{} lb, {} oz'.format(spd.WeightMajor.value, spd.WeightMinor.value))
+
+weight = int(spd.WeightMajor.value) *  16 + int(spd.WeightMinor.value)
+print('Weight in oz: {}'.format(weight))

@@ -14,8 +14,8 @@ response = api.execute('GetItem', {
         'Item.ShippingPackageDetails',
     ]
 })
-with open('item.json', 'w') as fp:
-    json.dump(response.dict(), fp, indent=2)
+# with open('item.json', 'w') as fp:
+#     json.dump(response.dict(), fp, indent=2)
 
 item = response.reply.Item
 
