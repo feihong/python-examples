@@ -1,3 +1,10 @@
+"""
+Values you can expect for service_type:
+
+usps_first_class_mail
+usps_priority_mail
+usps_priority_mail_express
+"""
 import os
 from postmen import Postmen, PostmenException
 
@@ -54,14 +61,14 @@ receiver = dict(
 parcel = dict(
     box_type='custom',
     weight={
-        'value': 0.3,
+        'value': 7,
         'unit': 'lb'
     },
     dimension={
-        'width': 1,
-        'height': 4,
-        'depth': 0.3,
-        'unit': 'cm'
+        'width': 8,
+        'height': 5,
+        'depth': 5,
+        'unit': 'in'
     },
     items=[
          item
