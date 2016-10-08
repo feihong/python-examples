@@ -1,10 +1,11 @@
 """
 Values you can expect for service_type:
 
-usps_first_class_mail
-usps_priority_mail
-usps_priority_mail_express
+What values are allowed for box_type:
+https://docs.postmen.com/usps.html#parcel
+
 """
+import json
 import os
 from postmen import Postmen, PostmenException
 
@@ -25,7 +26,7 @@ item = dict(
     sku='111-222-333',
     weight={
         'unit': 'lb',
-        'value': 0.3
+        'value': 25
     }
 )
 
@@ -59,15 +60,13 @@ receiver = dict(
 )
 
 parcel = dict(
-    box_type='custom',
-    weight={
-        'value': 7,
-        'unit': 'lb'
-    },
+    # box_type='custom',
+    box_type='usps_flat_rate_envelope',
+    weight=item['weight'],
     dimension={
-        'width': 8,
+        'width': 7,
         'height': 5,
-        'depth': 5,
+        'depth': 0.2,
         'unit': 'in'
     },
     items=[
@@ -89,6 +88,9 @@ payload = dict(
 try:
     api = Postmen(api_key, region)
     result = api.create('rates', payload)
+    with open('result.json', 'w') as fp:
+        json.dump(result, fp, indent=2)
+
     for rate in result['rates']:
         print(rate['service_type'], rate['total_charge']['amount'])
 except PostmenException as ex:
