@@ -1,8 +1,6 @@
 """
-Source: https://github.com/postmen/postmen-sdk-python/blob/master/examples/rates_create.py
-
-What values are allowed for box_type:
-https://docs.postmen.com/usps.html#parcel
+Source:
+https://github.com/postmen/postmen-sdk-python/blob/master/examples/rates_create.py
 
 """
 import json
@@ -74,26 +72,39 @@ parcel = dict(
     ]
 )
 
-payload = dict(
-    is_document=False,
-    async=False,
-    shipper_accounts=[{'id': shipper_id}],
-    shipment={
+
+payload = {
+    'is_document': False,
+    'return_shipment': False,
+    'paper_size': 'default',
+    'service_type': 'usps_flat_rate_envelope',
+    # 'customs': {
+    #     'billing': {
+    #         'paid_by': 'shipper',
+    #         'method': {
+    #             'account_number': '950000002',
+    #             'type': 'account',
+    #         }
+    #     },
+    #     'purpose': 'gift'
+    # },
+    'shipper_account': {
+        'id': shipper_id,
+    },
+    'shipment': {
         'parcels': [parcel],
         'ship_from': sender,
-        'ship_to': receiver,
+        'ship_to': receiver
     }
-)
+}
 
 try:
     api = Postmen(api_key, region)
-    result = api.create('rates', payload)
-    with open('result.json', 'w') as fp:
-        json.dump(result, fp, indent=2)
-
-    for rate in result['rates']:
-        print(rate['service_type'], rate['total_charge']['amount'])
-except PostmenException as ex:
-    print(ex.code())
-    print(ex.message())
-    print(ex.details())
+    result = api.create('labels', payload)
+    print("RESULT")
+    pp.pprint(result)
+except PostmenException as e:
+    print(e.code())
+    print(e.message())
+    with open('error_details.json', 'w') as fp:
+        json.dump(e.details(), fp, indent=2)
