@@ -14,6 +14,9 @@ api_key, shipper_id = os.environ['POSTMEN_PARAMS'].split(';')
 region = 'sandbox'
 
 
+WEIGHT_IN_OZ = 2
+
+
 item = dict(
     description='Snack Bar',
     hs_code='11111111',
@@ -26,7 +29,7 @@ item = dict(
     sku='111-222-333',
     weight={
         'unit': 'lb',
-        'value': 25
+        'value': WEIGHT_IN_OZ / 16,
     }
 )
 
@@ -59,7 +62,9 @@ receiver = dict(
     type='residential'
 )
 
-box_type = 'usps_small_flat_rate_box'
+# box_type = 'custom'
+box_type = 'usps_parcel'
+# box_type = 'usps_small_flat_rate_box'
 # box_type = 'usps_flat_rate_envelope'
 # box_type = 'usps_flat_rate_padded_envelope'
 
@@ -90,6 +95,9 @@ payload = dict(
 
 
 print('Box type:', box_type)
+print('Weight in oz:', WEIGHT_IN_OZ)
+print()
+
 try:
     api = Postmen(api_key, region)
     result = api.create('rates', payload)
