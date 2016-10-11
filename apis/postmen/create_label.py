@@ -58,7 +58,6 @@ receiver = dict(
 )
 
 parcel = dict(
-    # box_type='custom',
     box_type='usps_flat_rate_envelope',
     weight=item['weight'],
     dimension={
@@ -74,20 +73,11 @@ parcel = dict(
 
 
 payload = {
+    'async': False,
     'is_document': False,
     'return_shipment': False,
     'paper_size': 'default',
-    'service_type': 'usps_flat_rate_envelope',
-    # 'customs': {
-    #     'billing': {
-    #         'paid_by': 'shipper',
-    #         'method': {
-    #             'account_number': '950000002',
-    #             'type': 'account',
-    #         }
-    #     },
-    #     'purpose': 'gift'
-    # },
+    'service_type': 'usps_priority_mail',
     'shipper_account': {
         'id': shipper_id,
     },
@@ -101,8 +91,8 @@ payload = {
 try:
     api = Postmen(api_key, region)
     result = api.create('labels', payload)
-    print("RESULT")
-    pp.pprint(result)
+    with open('result.json', 'w') as fp:
+        json.dump(result, fp, indent=2)
 except PostmenException as e:
     print(e.code())
     print(e.message())
