@@ -59,9 +59,12 @@ receiver = dict(
     type='residential'
 )
 
+box_type = 'usps_small_flat_rate_box'
+# box_type = 'usps_flat_rate_envelope'
+# box_type = 'usps_flat_rate_padded_envelope'
+
 parcel = dict(
-    # box_type='custom',
-    box_type='usps_flat_rate_envelope',
+    box_type=box_type,
     weight=item['weight'],
     dimension={
         'width': 7,
@@ -85,6 +88,8 @@ payload = dict(
     }
 )
 
+
+print('Box type:', box_type)
 try:
     api = Postmen(api_key, region)
     result = api.create('rates', payload)
