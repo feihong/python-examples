@@ -5,6 +5,7 @@ https://github.com/postmen/postmen-sdk-python/blob/master/examples/rates_create.
 """
 import json
 import os
+import webbrowser
 from postmen import Postmen, PostmenException
 
 
@@ -12,88 +13,62 @@ api_key, shipper_id = os.environ['POSTMEN_PARAMS'].split(';')
 region = 'sandbox'
 
 
-item = dict(
-    description='Snack Bar',
-    hs_code='11111111',
-    origin_country='CHN',
-    price={
-        'amount': 13.50,
-        'currency': 'USD'
-    },
-    quantity=1,
-    sku='111-222-333',
-    weight={
-        'unit': 'lb',
-        'value': 25
-    }
-)
+sender = {'city': 'Chicago',
+                    'contact_name': 'Poppy Luffy Esq.',
+                    'country': 'USA',
+                    'phone': '312-744-7616',
+                    'postal_code': '60625',
+                    'state': 'IL',
+                    'street1': '4455 N. Lincoln Ave.',
+                    'type': 'residential'}
 
-sender = dict(
-    contact_name='Hugo Strongola',
-    company_name=None,
-    street1='126 W Paddock Street',
-    street2=None,
-    street3=None,
-    city='Crystal Lake',
-    state='IL',
-    postal_code='60014',
-    country='USA',
-    phone='1-403-504-5496',
-    fax=None,
-    fax_id=None,
-    email='test@test.com',
-    type='residential'
-)
+receiver = {'city': 'Belleville',
+                  'company_name': 'The Receiving Company',
+                  'contact_name': 'Recipient Name',
+                  'country': 'USA',
+                  'phone': '302-0123-1234',
+                  'postal_code': '62220',
+                  'state': 'IL',
+                  'street1': '255 New town',
+                  'street2': 'Wow Avenue',
+                  'street3': 'Boring part of town',
+                  'type': 'residential'}
 
-receiver = dict(
-    contact_name='Magdalena Kumbata',
-    street1='400 N State Street',
-    street2=None,
-    street3=None,
-    city='Chicago',
-    state='IL',
-    postal_code='60602',
-    country='USA',
-    phone='1-403-504-4839',
-    email='test@test.net',
-    type='residential'
-)
-
-parcel = dict(
-    box_type='usps_flat_rate_envelope',
-    weight=item['weight'],
-    dimension={
-        'width': 7,
-        'height': 5,
-        'depth': 0.2,
-        'unit': 'in'
-    },
-    items=[
-         item
-    ]
-)
-
+parcel = {'box_type': 'custom',
+                   'description': 'Food XS',
+                   'dimension': {'depth': 3,
+                                 'height': 5,
+                                 'unit': 'in',
+                                 'width': 4},
+                   'items': [{'description': 'Food Bar',
+                              'origin_country': 'USA',
+                              'price': {'amount': 3, 'currency': 'USD'},
+                              'quantity': 2,
+                              'sku': 'Epic_Food_Bar',
+                              'weight': {'unit': 'lb', 'value': 0.3}}],
+                   'weight': {'unit': 'lb', 'value': 0.6}
+}
 
 payload = {
     'async': False,
     'is_document': False,
-    'return_shipment': False,
     'paper_size': 'default',
-    'service_type': 'usps_priority_mail',
-    'shipper_account': {
-        'id': shipper_id,
-    },
-    'references': ['reference1', 'reference2'],
+    'return_shipment': False,
+    'service_type': 'usps_first_class_mail',
+    'shipper_account': {'id': shipper_id},
+    'references': ['reference1', 'reference2', 'reference3'],
     'shipment': {
         'parcels': [parcel],
         'ship_from': sender,
-        'ship_to': receiver
-    }
+        'ship_to': receiver,
+    },
 }
 
 try:
     api = Postmen(api_key, region)
     result = api.create('labels', payload)
+    url = result['files']['label']['url']
+    webbrowser.open(url)
     with open('result.json', 'w') as fp:
         json.dump(result, fp, indent=2)
 except PostmenException as e:
