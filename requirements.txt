@@ -9,11 +9,13 @@ muffin
 muffin-playground
 nose
 npyscreen
+Pillow
 Plim
 pyjade
 PyPDF2
 reportlab
 requests
+svgwrite
 Tornado
 urwid
 watchdog
