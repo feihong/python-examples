@@ -13,40 +13,51 @@ api_key, shipper_id = os.environ['POSTMEN_PARAMS'].split(';')
 region = 'sandbox'
 
 
-sender = {'city': 'Chicago',
-                    'contact_name': 'Poppy Luffy Esq.',
-                    'country': 'USA',
-                    'phone': '312-744-7616',
-                    'postal_code': '60625',
-                    'state': 'IL',
-                    'street1': '4455 N. Lincoln Ave.',
-                    'type': 'residential'}
+sender = {
+    'city': 'Chicago',
+    'contact_name': 'Poppy Luffy Esq.',
+    'country': 'USA',
+    'phone': '312-744-7616',
+    'postal_code': '60625',
+    'state': 'IL',
+    'street1': '4455 N. Lincoln Ave.',
+    'type': 'residential'
+}
 
-receiver = {'city': 'Belleville',
-                  'company_name': 'The Receiving Company',
-                  'contact_name': 'Recipient Name',
-                  'country': 'USA',
-                  'phone': '302-0123-1234',
-                  'postal_code': '62220',
-                  'state': 'IL',
-                  'street1': '255 New town',
-                  'street2': 'Wow Avenue',
-                  'street3': 'Boring part of town',
-                  'type': 'residential'}
+receiver = {
+    'city': 'Belleville',
+    # 'company_name': 'The Receiving Company',
+    'contact_name': 'Recipient Name',
+    'country': 'USA',
+    'phone': '302-0123-1234',
+    'postal_code': '62220',
+    'state': 'IL',
+    'street1': '255 New town',
+    'street2': 'Wow Avenue',
+    'street3': 'Boring part of town',
+    'type': 'residential'
+}
 
-parcel = {'box_type': 'custom',
-                   'description': 'Food XS',
-                   'dimension': {'depth': 3,
-                                 'height': 5,
-                                 'unit': 'in',
-                                 'width': 4},
-                   'items': [{'description': 'Food Bar',
-                              'origin_country': 'USA',
-                              'price': {'amount': 3, 'currency': 'USD'},
-                              'quantity': 2,
-                              'sku': 'Epic_Food_Bar',
-                              'weight': {'unit': 'lb', 'value': 0.3}}],
-                   'weight': {'unit': 'lb', 'value': 0.6}
+parcel = {
+    'box_type': 'custom',
+    'description': 'Food XS',
+    'dimension': {
+        'depth': 3,
+        'height': 5,
+        'unit': 'in',
+        'width': 4
+    },
+    'weight': {'unit': 'lb', 'value': 0.6},
+    'items': [
+        {
+            'description': 'Food Bar',
+            'origin_country': 'USA',
+            'price': {'amount': 3, 'currency': 'USD'},
+            'quantity': 2,
+            'sku': 'Epic_Food_Bar',
+            'weight': {'unit': 'lb', 'value': 0.3},
+        }
+    ],
 }
 
 payload = {
