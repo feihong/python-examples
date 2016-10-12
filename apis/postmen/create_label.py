@@ -31,7 +31,7 @@ item = dict(
 sender = dict(
     contact_name='Hugo Strongola',
     company_name=None,
-    street1='126 Paddock Street',
+    street1='126 W Paddock Street',
     street2=None,
     street3=None,
     city='Crystal Lake',
@@ -47,10 +47,12 @@ sender = dict(
 
 receiver = dict(
     contact_name='Magdalena Kumbata',
-    street1='400 State Street',
+    street1='400 N State Street',
+    street2=None,
+    street3=None,
     city='Chicago',
     state='IL',
-    postal_code='60605',
+    postal_code='60602',
     country='USA',
     phone='1-403-504-4839',
     email='test@test.net',
@@ -81,6 +83,7 @@ payload = {
     'shipper_account': {
         'id': shipper_id,
     },
+    'references': ['reference1', 'reference2'],
     'shipment': {
         'parcels': [parcel],
         'ship_from': sender,
