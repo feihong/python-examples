@@ -10,7 +10,7 @@ point = 1
 inch = 72
 
 
-with open('test.pdf', 'wb') as fp:
+with open('output.pdf', 'wb') as fp:
     c = Canvas(fp, pagesize=(8.5*inch, 11*inch))
     c.setStrokeColorRGB(0,0,0)
     c.setFillColorRGB(0,0,0)

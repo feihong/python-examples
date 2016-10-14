@@ -24,7 +24,7 @@ def draw_string(x, y, text):
     c.drawString(x * inch, y * inch, text)
 
 
-with open('test.pdf', 'wb') as fp:
+with open('output.pdf', 'wb') as fp:
     c = Canvas(fp, pagesize=(8.5*inch, 11*inch))
 
     c.setFont('STSong-Light', 32)
