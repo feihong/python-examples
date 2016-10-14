@@ -25,14 +25,14 @@ sender = {
 }
 
 receiver = {
-    'city': 'Belleville',
-    # 'company_name': 'The Receiving Company',
+    'city': 'Crystal Lake',
+    'company_name': 'The Receiving Company',
     'contact_name': 'Recipient Name',
     'country': 'USA',
     'phone': '302-0123-1234',
-    'postal_code': '62220',
+    'postal_code': '60014',
     'state': 'IL',
-    'street1': '255 New town',
+    'street1': '126 W Paddock St,',
     'street2': 'Wow Avenue',
     'street3': 'Boring part of town',
     'type': 'residential'
@@ -44,10 +44,10 @@ parcel = {
     'dimension': {
         'depth': 3,
         'height': 5,
+        'width': 4,
         'unit': 'in',
-        'width': 4
     },
-    'weight': {'unit': 'lb', 'value': 0.6},
+    'weight': {'value': 0.6, 'unit': 'lb'},
     'items': [
         {
             'description': 'Food Bar',
@@ -55,7 +55,7 @@ parcel = {
             'price': {'amount': 3, 'currency': 'USD'},
             'quantity': 2,
             'sku': 'Epic_Food_Bar',
-            'weight': {'unit': 'lb', 'value': 0.3},
+            'weight': {'value': 0.3, 'unit': 'lb'},
         }
     ],
 }
@@ -80,8 +80,10 @@ try:
     result = api.create('labels', payload)
     url = result['files']['label']['url']
     webbrowser.open(url)
-    with open('result.json', 'w') as fp:
-        json.dump(result, fp, indent=2)
+    # with open('result.json', 'w') as fp:
+    #     json.dump(result, fp, indent=2)
+    print('Cost: {}'.format(result['rate']['total_charge']['amount']))
+    print('Tracking number: {}'.format(result['tracking_numbers'][0]))
 except PostmenException as e:
     print(e.code())
     print(e.message())
