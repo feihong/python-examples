@@ -1,3 +1,8 @@
+"""
+Print out standard fonts.
+
+"""
+
 from reportlab.pdfbase import pdfmetrics
 
 

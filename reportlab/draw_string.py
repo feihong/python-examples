@@ -1,3 +1,8 @@
+"""
+Create a letter size canvas and draw some strings on it.
+
+"""
+
 from reportlab.pdfgen.canvas import Canvas
 
 
