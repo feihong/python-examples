@@ -2,6 +2,9 @@
 Source:
 https://github.com/postmen/postmen-sdk-python/blob/master/examples/rates_create.py
 
+API page:
+https://docs.postmen.com/api.html#labels-create-a-label
+
 """
 import json
 import os
