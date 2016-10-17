@@ -1,5 +1,5 @@
 """
-Create a new PDF file that merges two other PDF files into it.
+Create a new PDF file that combines images and text.
 
 """
 import datetime
@@ -20,24 +20,39 @@ def get_new_page():
     return reader.getPage(0)
 
 
-def add_label(page, x, y):
-    fp = open('label.pdf', 'rb')
-    reader = PdfFileReader(fp)
-    page.mergeTranslatedPage(reader.getPage(0), x, y)
+def add_labels(page, coordinates):
+    bio = BytesIO()
+    c = Canvas(bio, pagesize=(11*inch, 8.5*inch))
+    width, height = 3.6*inch, 5.4*inch
+
+    for x, y in coordinates:
+        c.drawImage('label.png', x, y, width, height)
+        c.rect(x, y, width, height)
+
+    c.save()
+    page2 = PdfFileReader(bio).getPage(0)
+    page.mergePage(page2)
+
 
 
 def add_text(page):
     items = '4-dork-9, 3-dweeb-5'
 
+    x = 3
+
     bio = BytesIO()
     c = Canvas(bio, pagesize=(11*inch, 8.5*inch))
-    c.setFont('Helvetica', 12)
-    c.drawString(inch, 120, 'User: CoolioFoolio')
-    c.drawString(inch, 100, 'Tracking number: 0000 1111 2222 3333 4444 5555 66')
-    c.drawString(inch, 80, 'Items: ' + items)
+    c.setFont('Helvetica', 10)
+    lines = [
+        'User: CoolioFoolio',
+        'Tracking number: 0000 1111 2222 3333 4444 5555 66',
+        'Items: ' + items,
+    ]
+    for i, line in enumerate(lines):
+        c.drawString(x, 120 - i*15, line)
 
-    c.setFont('Helvetica', 9)
-    c.translate(250, 450)
+    c.setFont('Helvetica', 8)
+    c.translate(255, 443)
     c.rotate(-90)
     c.drawString(0, 0, items)
     c.save()
@@ -50,9 +65,11 @@ if __name__ == '__main__':
     page = get_new_page()
     output.addPage(page)
 
-    add_label(page, -10, 2*inch)
-    add_label(page, 253, 2*inch)
-    add_label(page, 515, 2*inch)
+    add_labels(page, [
+        (3, 150),
+        (265, 150),
+        (527, 150),
+    ])
 
     add_text(page)
 

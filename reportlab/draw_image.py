@@ -20,8 +20,10 @@ with open('output.pdf', 'wb') as fp:
     # Don't draw the image at its native size, because it will take up way too
     # much space.
     for i in range(3):
-        c.drawImage(img_file, (i+1)*3 + i*width, 100, width, height)
-        c.rect((i+1)*3 + i*width, 100, width, height)
+        x = (i+1)*3 + i*width
+        print(x)
+        c.drawImage(img_file, x, 100, width, height)
+        c.rect(x, 100, width, height)
 
     # c.drawImage(img_file, 6 + width, 100, width, height)
     # c.drawImage(img_file, 9 + 2*width, 100, width, height)
