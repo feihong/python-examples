@@ -12,7 +12,8 @@ with open('output.pdf', 'wb') as fp:
     c = Canvas(fp, pagesize=(11*inch, 8.5*inch))
     c.setStrokeColorRGB(0.4, 0.4, 0.4)
     c.setFillColorRGB(1, 0, 0)
-    c.rect(10, 10, 11*inch-20, 8.5*inch-20, fill=True)
+    c.rect(0, 0, 11*inch, 8.5*inch, fill=True)
 
-    c.drawImage('../pypdf2/label.png', 0, 0, 100, 300)
+    dim = c.drawImage('../pypdf2/label.png', 10, 100, 1200/4, 1800/4)
+    print(dim)
     c.save()
