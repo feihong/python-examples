@@ -32,5 +32,8 @@ def get_images(pdf_file):
 
 
 if __name__ == '__main__':
-    image = list(get_images('label.pdf'))[0]
+    images = list(get_images('label.pdf'))
+    image = images[0]
+    # Could also save as ppm (as pdfimages command does, but resulting file is
+    # much, much larger).
     image.save('label.png')
