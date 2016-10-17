@@ -8,29 +8,29 @@ import PyPDF2
 from PIL import Image
 
 
+def get_images(pdf_file):
+    with open(pdf_file, 'rb') as fp:
+        reader = PyPDF2.PdfFileReader(fp)
+        page = reader.getPage(0)
+        xObject = page['/Resources']['/XObject'].getObject()
+
+        for obj in xObject:
+            if xObject[obj]['/Subtype'] == '/Image':
+                size = (xObject[obj]['/Width'], xObject[obj]['/Height'])
+                data = xObject[obj].getData()
+                if xObject[obj]['/ColorSpace'] == '/DeviceRGB':
+                    mode = "RGB"
+                else:
+                    mode = "P"
+
+                encoding = xObject[obj]['/Filter']
+                if encoding == '/FlateDecode':
+                    yield Image.frombytes(mode, size, data)
+                else:
+                    raise Exception(
+                        'Unexpected image encoding: {}'.format(encoding))
+
+
 if __name__ == '__main__':
-    fp = open('label.pdf', 'rb')
-    input1 = PyPDF2.PdfFileReader(fp)
-    page0 = input1.getPage(0)
-    xObject = page0['/Resources']['/XObject'].getObject()
-
-    for obj in xObject:
-        if xObject[obj]['/Subtype'] == '/Image':
-            size = (xObject[obj]['/Width'], xObject[obj]['/Height'])
-            data = xObject[obj].getData()
-            if xObject[obj]['/ColorSpace'] == '/DeviceRGB':
-                mode = "RGB"
-            else:
-                mode = "P"
-
-            if xObject[obj]['/Filter'] == '/FlateDecode':
-                img = Image.frombytes(mode, size, data)
-                img.save(obj[1:] + ".png")
-            elif xObject[obj]['/Filter'] == '/DCTDecode':
-                img = open(obj[1:] + ".jpg", "wb")
-                img.write(data)
-                img.close()
-            elif xObject[obj]['/Filter'] == '/JPXDecode':
-                img = open(obj[1:] + ".jp2", "wb")
-                img.write(data)
-                img.close()
+    image = list(get_images('label.pdf'))[0]
+    image.save('label.png')
