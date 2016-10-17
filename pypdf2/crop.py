@@ -14,8 +14,10 @@ def get_label_page():
     fp = open('label.pdf', 'rb')
     reader = PdfFileReader(fp)
     page = reader.getPage(0)
-    page.cropBox.lowerLeft = (15, 10)
-    page.cropBox.upperRight = (273, 457)
+    page.mediaBox.lowerLeft = (15, 10)
+    page.mediaBox.upperRight = (273, 433)
+    # page.cropBox.lowerLeft = (15, 10)
+    # page.cropBox.upperRight = (273, 457)
     # page.trimBox.lowerLeft = (15, 10)
     # page.trimBox.upperRight = (273, 457)
     return page

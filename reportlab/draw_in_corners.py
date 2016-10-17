@@ -11,7 +11,7 @@ inch = 72
 with open('output.pdf', 'wb') as fp:
     c = Canvas(fp, pagesize=(8.5*inch, 11*inch))
 
-    c.setFont('Times-Roman', 10)
+    c.setFontSize(10)
     c.drawString(0, 780, '1')
     c.drawString(605, 780, '2')
     c.drawString(605, 5, '3')
