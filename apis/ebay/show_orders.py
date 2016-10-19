@@ -20,6 +20,7 @@ for order in orders:
     if order.PaidTime < yesterday:
         continue
     paid_count += 1
+    print(order.OrderID)
     print(order.BuyerUserID)
     print(order.OrderStatus)
     print('Created %s' % order.CreatedTime)
