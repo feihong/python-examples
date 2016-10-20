@@ -25,14 +25,19 @@ for order in orders:
     print(order.OrderStatus)
     print('Created %s' % order.CreatedTime)
     print('Paid %s on %s' % (order.AmountPaid.value, order.PaidTime))
-    print('Shipped %s' % order.ShippedTime)
+    print('Shipped %s' % getattr(order, 'ShippedTime', 'N/A'))
     transactions = order.TransactionArray.Transaction
     item_titles = '; '.join(t.Item.Title for t in transactions)
     print(item_titles)
     item_ids = ', '.join(t.Item.ItemID for t in transactions)
     print(item_ids)
     sa = order.ShippingAddress
-    address = '%s\n%s\n%s\n%s, %s %s' % (sa.Name, sa.Street1, sa.Street2, sa.CityName, sa.CountryName, sa.PostalCode)
+    address = '%s\n%s\n%s\n%s, %s %s\n%s' % (
+        sa.Name,
+        sa.Street1,
+        sa.Street2,
+        sa.CityName, sa.StateOrProvince, sa.PostalCode,
+        sa.CountryName)
     print(address)
     print('=' * 80)
     # import ipdb; ipdb.set_trace()
