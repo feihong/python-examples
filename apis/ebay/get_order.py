@@ -13,8 +13,13 @@ credentials = dict(zip(('appid', 'devid', 'certid', 'token'), os.environ['EBAY_P
 api = Trading(config_file=None, **credentials)
 response = api.execute('GetOrders', {
     'OrderIDArray': [
-        {'OrderID': '172064937927-1606183349007'}
+        {'OrderID': '172074247204-1606470485007'}
     ]
 })
 with open('order.json', 'w') as fp:
     json.dump(response.dict(), fp, indent=2)
+
+rdict = response.dict()
+orders = rdict['OrderArray']['Order']
+text = json.dumps(orders[0]['ShippingAddress'], indent=2)
+print(text)
