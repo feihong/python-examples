@@ -51,7 +51,7 @@ receiver = {
 }
 
 box_type = 'custom'
-box_type = 'usps_parcel'
+# box_type = 'usps_parcel'
 
 
 def get_payload(weight):
@@ -75,8 +75,8 @@ def get_payload(weight):
         box_type=box_type,
         weight=item['weight'],
         dimension={
-            'width': 4,
-            'height': 5,
+            'width': 1,
+            'height': 1,
             'depth': 0.2,
             'unit': 'in'
         },
@@ -102,8 +102,11 @@ print()
 for weight in weights:
     print('Weight: {} oz'.format(weight))
     try:
+        payload = get_payload(weight)
+        with open('payload.json', 'w') as fp:
+            json.dump(payload, fp, indent=2)
         api = Postmen(api_key, region)
-        result = api.create('rates', get_payload(weight))
+        result = api.create('rates', payload)
         with open('result.json', 'w') as fp:
             json.dump(result, fp, indent=2)
         for rate in result['rates']:
