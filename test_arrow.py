@@ -14,3 +14,12 @@ def test_utf_offset():
     dt = arrow.now()
     hours_diff = dt.utcoffset().total_seconds() / 3600
     assert hours_diff == -5.0
+
+
+def test_get_datetime_for_day():
+    import datetime
+    dt = arrow.get(datetime.date.today())
+    assert dt.hour == 0
+    assert dt.minute == 0
+    assert dt.second == 0
+    assert dt.microsecond == 0
