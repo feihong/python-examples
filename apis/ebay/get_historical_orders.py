@@ -1,16 +1,19 @@
 """
-Fetch historical orders based on a datetime range.
+Fetch historical orders based on a datetime range. Based on experiments, you
+can access roughly 4 months of sales records via the GetOrders API.
 
 """
-import arrow
 import os
+import datetime
+import arrow
 from ebaysdk.trading import Connection as Trading
 
 
 credentials = dict(zip(('appid', 'devid', 'certid', 'token'), os.environ['EBAY_PARAMS'].split(';')))
 api = Trading(config_file=None, **credentials)
 
-start = arrow.utcnow().replace(days=-90)
+start = arrow.utcnow().replace(days=-120).replace(
+    hour=0, minute=0, second=0, microsecond=0)
 end = start.replace(days=+1)
 
 response = api.execute('GetOrders', {
