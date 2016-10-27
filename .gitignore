@@ -3,3 +3,7 @@ __pycache__
 *.egg-info
 *.pyj-cached
 output.pdf
+
+payload.json
+result.json
+error_details.json

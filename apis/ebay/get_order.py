@@ -13,7 +13,7 @@ credentials = dict(zip(('appid', 'devid', 'certid', 'token'), os.environ['EBAY_P
 api = Trading(config_file=None, **credentials)
 response = api.execute('GetOrders', {
     'OrderIDArray': [
-        {'OrderID': '172074247204-1606470485007'}
+        {'OrderID': '131712636714-1278000552003'}
     ]
 })
 with open('order.json', 'w') as fp:
