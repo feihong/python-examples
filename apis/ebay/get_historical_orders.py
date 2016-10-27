@@ -5,6 +5,7 @@ can access roughly 4 months of sales records via the GetOrders API.
 """
 import os
 import datetime
+import json
 import arrow
 from ebaysdk.trading import Connection as Trading
 
@@ -21,6 +22,8 @@ response = api.execute('GetOrders', {
     'CreateTimeTo': end,
     'OrderStatus': 'Completed',
 })
+with open('orders.json', 'w') as fp:
+    json.dump(response.dict(), fp, indent=2)
 
 orders = response.reply.OrderArray.Order
 orders.sort(key=lambda x: x.CreatedTime)
