@@ -16,7 +16,7 @@ api = Trading(config_file=None, **credentials)
 
 start = arrow.utcnow().replace(days=-120).replace(
     hour=0, minute=0, second=0, microsecond=0)
-end = start.replace(days=+30)
+end = start.replace(days=+20)
 
 def get_orders(page):
     response = api.execute('GetOrders', {
@@ -32,6 +32,7 @@ def get_orders(page):
             'PaginationResult',
             'ReturnedOrderCountActual',
             'OrderArray.Order.TransactionArray.Transaction.Item.ItemID',
+            'OrderArray.Order.TransactionArray.Transaction.QuantityPurchased',
         ]
     })
     if page == 1:
