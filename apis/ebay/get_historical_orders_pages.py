@@ -34,6 +34,7 @@ def get_orders(page):
             'ReturnedOrderCountActual',
             'OrderArray.Order.TransactionArray.Transaction.Item.ItemID',
             'OrderArray.Order.TransactionArray.Transaction.QuantityPurchased',
+            'OrderArray.Order.TransactionArray.Transaction.TransactionPrice',
         ]
     })
     if page == 1:
@@ -60,5 +61,6 @@ def get_all_orders():
 if __name__ == '__main__':
     print('Search range: {:YYYY-MM-DD} to {:YYYY-MM-DD}'.format(start, end))
     orders = list(get_all_orders())
+    print('Got {} orders'.format(len(orders)))
     with open('orders.json', 'w') as fp:
         json.dump(orders, fp, indent=2)
