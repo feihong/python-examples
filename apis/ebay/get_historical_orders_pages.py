@@ -23,6 +23,7 @@ def get_orders(page):
         'CreateTimeFrom': start,
         'CreateTimeTo': end,
         'OrderStatus': 'Completed',
+        'SortingOrder': 'Ascending',
         'Pagination': {
             'PageNumber': page,
             'EntriesPerPage': 100,
