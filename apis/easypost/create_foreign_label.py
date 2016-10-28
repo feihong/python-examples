@@ -1,6 +1,10 @@
 """
 Source: https://github.com/EasyPost/easypost-python/blob/master/README.md
 
+Customs guide: https://www.easypost.com/customs-guide.html
+
+EasyPost's foreign-bound labels are 1755 × 1155.
+
 """
 import webbrowser
 import os
@@ -8,6 +12,8 @@ import easypost
 
 
 easypost.api_key = os.environ['EASYPOST_API_KEY']
+
+weight = 1
 
 
 from_address = easypost.Address.create(
@@ -36,15 +42,36 @@ to_address = easypost.Address.create(
 
 parcel = easypost.Parcel.create(
     predefined_package='Parcel',
-    weight=1,
+    weight=weight,
+)
+
+customs_item = easypost.CustomsItem.create(
+    description = 'EasyPost Mug',
+    hs_tariff_number = 123456,
+    origin_country='US',
+    quantity=1,
+    value=25.45,
+    weight=weight,
+)
+
+customs_info = easypost.CustomsInfo.create(
+    customs_certify=1,
+    customs_signer='Hector Hammerfall',
+    contents_type='gift',
+    contents_explanation='',
+    eel_pfc='NOEEI 30.37(a)',
+    non_delivery_option='return',
+    restriction_type='none',
+    restriction_comments='',
+    customs_items=[customs_item]
 )
 
 shipment = easypost.Shipment.create(
     from_address=from_address,
     to_address=to_address,
     parcel=parcel,
+    customs_info=customs_info,
 )
-
 
 lowest_rate = shipment.lowest_rate()
 print('Rate:', lowest_rate.rate)
