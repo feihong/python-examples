@@ -1,6 +1,9 @@
 """
 Source: https://github.com/postmen/postmen-sdk-python/blob/master/examples/rates_create.py
 
+2016 USPS Rate Chart:
+https://www.postmen.com/courier/usps/rates/
+
 What values are allowed for box_type:
 https://docs.postmen.com/usps.html#parcel
 
