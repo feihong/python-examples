@@ -1,29 +1,31 @@
 import os
 import easypost
 
+
 easypost.api_key = os.environ['EASYPOST_API_KEY']
+
+
+from_address = easypost.Address.create(
+    verify=['delivery'],
+    name='Hugo Strongola',
+    street1='126 Paddock Street',
+    city='Crystal Lake',
+    state='IL',
+    zip='60014',
+    country='US',
+    phone='403-504-5496'
+)
 
 to_address = easypost.Address.create(
   verify=['delivery'],
   name='Dr. Steve Brule',
-  street1='179 N Harbor Dr',
+  street1='400 State Street',
   street2='',
-  city='Redondo Beach',
-  state='CA',
-  zip='90277',
+  city='Chicago',
+  state='IL',
+  zip='60605',
   country='US',
   phone='310-808-5243'
-)
-from_address = easypost.Address.create(
-  verify=['delivery'],
-  name='EasyPost',
-  street1='118 2nd Street',
-  street2='4th Floor',
-  city='San Francisco',
-  state='CA',
-  zip='94105',
-  country='US',
-  phone='415-456-7890'
 )
 
 parcel = easypost.Parcel.create(
@@ -32,8 +34,8 @@ parcel = easypost.Parcel.create(
 )
 
 shipment = easypost.Shipment.create(
-    to_address=to_address,
     from_address=from_address,
+    to_address=to_address,    
     parcel=parcel,
 )
 
