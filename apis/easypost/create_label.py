@@ -1,6 +1,8 @@
 """
 Source: https://github.com/EasyPost/easypost-python/blob/master/README.md
 
+Labels created by EasyPost are 1200 × 1800.
+
 """
 import webbrowser
 import os
@@ -46,6 +48,8 @@ shipment = easypost.Shipment.create(
 
 
 lowest_rate = shipment.lowest_rate()
+print('Rate:', lowest_rate.rate)
+print('Service:', lowest_rate.service)
 if lowest_rate.service == 'First':
     shipment.buy(rate=lowest_rate)
     print('Tracking:', shipment.tracking_code)
