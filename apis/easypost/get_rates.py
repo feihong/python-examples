@@ -1,3 +1,7 @@
+"""
+Source: https://github.com/EasyPost/easypost-python/blob/master/README.md
+
+"""
 import os
 import easypost
 
@@ -30,14 +34,14 @@ to_address = easypost.Address.create(
 
 parcel = easypost.Parcel.create(
     predefined_package='Parcel',
-    weight=0.34,
+    weight=1,   # in ounces
 )
 
 shipment = easypost.Shipment.create(
     from_address=from_address,
-    to_address=to_address,    
+    to_address=to_address,
     parcel=parcel,
 )
 
-for rate in sorted(shipment.rates, key=lambda x: x.rate):
+for rate in sorted(shipment.rates, key=lambda x: float(x.rate)):
     print(rate.carrier, rate.service, rate.rate)
