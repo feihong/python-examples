@@ -1,40 +1,41 @@
 import datetime
 from io import BytesIO
 from reportlab.pdfgen.canvas import Canvas
+from reportlab.lib.colors import HexColor
 from PyPDF2 import PdfFileWriter, PdfFileReader
 
 
-def get_text_page(x, y, text):
+def get_text_page():
     inch = 72
     bio = BytesIO()
     c = Canvas(bio, pagesize=(8.5*inch, 11*inch))
+
+    c.setFillColor(HexColor(0xFF5722))
+    text = 'Tiger, tiger, burning bright'
+    c.drawString(5.5*inch, 10*inch, text)
+
     c.setFillColorRGB(1, 0, 1)
-    c.translate(x * inch, y * inch)
+    c.translate(4.5*inch, 9*inch)
     c.rotate(-90)
+    text = 'Hey Jude, this was added at %s' % datetime.datetime.now()
     c.drawString(0, 0, text)
     c.save()
-    reader = PdfFileReader(bio)
-    return reader.getPage(0)
+    return PdfFileReader(bio).getPage(0)
 
 
 if __name__ == '__main__':
-    with open('input.pdf', 'rb') as fp:
-        input1 = PdfFileReader(fp)
+    reader = PdfFileReader(open('input.pdf', 'rb'))
 
-        output = PdfFileWriter()
+    writer = PdfFileWriter()
 
-        # Generate a page that just contains some text.
-        text_page = get_text_page(
-            4.5, 9, 'Hey Jude, this was added at %s' % datetime.datetime.now())
+    # Get first page from input document.
+    page = reader.getPage(0)
 
-        # Get first page from input document.
-        page = input1.getPage(0)
+    # Merge a page containing text into the input page.
+    page.mergePage(get_text_page())
 
-        # Merge the text page into the input page.
-        page.mergePage(text_page)
+    # Add page to output document.
+    writer.addPage(page)
 
-        # Add page to output document.
-        output.addPage(page)
-
-        with open('output.pdf', 'wb') as fout:
-            output.write(fout)
+    with open('output.pdf', 'wb') as fp:
+        writer.write(fp)
