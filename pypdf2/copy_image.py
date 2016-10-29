@@ -35,9 +35,8 @@ def get_images(pdf_file):
 def get_image_page(image):
     inch = 72
     bio = BytesIO()
-    c = Canvas(bio, pagesize=(8.5*inch, 11*inch))
-    # c.drawImage(img_file, x, 100, width, height)
-    c.drawImage(image, 0, 50, 4*inch, 6*inch)
+    c = Canvas(bio, pagesize=(11*inch, 8.5*inch))
+    c.drawImage(image, 50, 50, 4*inch, 6*inch)
     c.save()
     return PdfFileReader(bio).getPage(0)
 
