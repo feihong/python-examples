@@ -6,8 +6,9 @@ from reportlab.lib.colors import HexColor
 from PyPDF2 import PdfFileWriter, PdfFileReader
 
 
-chunk = '0123456789 '
-text = 'Tiger, tiger, burning bright\nIn the forests of the night'
+chunk = '123456789 '
+text = textwrap.fill(chunk * 12, 37)
+# text = chunk * 4
 
 
 def get_text_page():
@@ -19,9 +20,12 @@ def get_text_page():
     c.drawImage('label.png', x, y, 4*inch, 6*inch)
     c.rect(x, y, 4*inch, 6*inch)
 
+    c.translate(330, 355)
+    c.rotate(-90)
+
     t = c.beginText()
     t.setFont('Courier', 8)
-    t.setTextOrigin(55, 190)
+    t.setTextOrigin(0, 0)
     t.textLines(text)
     c.drawText(t)
 
