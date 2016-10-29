@@ -1,15 +1,17 @@
 """
-Extract an image from label.pdf.
+Copy an image from one pdf file to another.
 
-Source: http://stackoverflow.com/a/34116472
 """
-import PyPDF2
+from io import BytesIO
+from PyPDF2 import PdfFileWriter, PdfFileReader
 from PIL import Image
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen.canvas import Canvas
 
 
 def get_images(pdf_file):
     with open(pdf_file, 'rb') as fp:
-        reader = PyPDF2.PdfFileReader(fp)
+        reader = PdfFileReader(fp)
         page = reader.getPage(0)
         xObject = page['/Resources']['/XObject'].getObject()
 
@@ -30,9 +32,21 @@ def get_images(pdf_file):
                         'Unexpected image encoding: {}'.format(encoding))
 
 
+def get_image_page(image):
+    inch = 72
+    bio = BytesIO()
+    c = Canvas(bio, pagesize=(8.5*inch, 11*inch))
+    # c.drawImage(img_file, x, 100, width, height)
+    c.drawImage(image, 0, 50, 4*inch, 6*inch)
+    c.save()
+    return PdfFileReader(bio).getPage(0)
+
+
 if __name__ == '__main__':
-    images = list(get_images('label.pdf'))
-    image = images[0]
-    # Could also save as ppm (as pdfimages command does, but resulting file is
-    # much, much larger).
-    image.save('label.png')
+    image = list(get_images('label.pdf'))[0]
+    image_reader = ImageReader(image)
+
+    with open('output.pdf', 'wb') as fp:
+        writer = PdfFileWriter()
+        writer.addPage(get_image_page(image_reader))
+        writer.write(fp)
