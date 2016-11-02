@@ -1,3 +1,9 @@
+"""
+Get rates from ShipHawk API.
+
+The rates seem identical to those for EasyPost.
+
+"""
 import os
 import json
 import requests
