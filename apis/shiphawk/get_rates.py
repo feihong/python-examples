@@ -12,10 +12,10 @@ data = {
   'items':[
     {
       'item_type': 'parcel',
-      'length': '5',
-      'width' : '5',
-      'height': '2',
-      'weight': '1',
+      'length': 6,      # in inches
+      'width' : 7,
+      'height': 1,
+      'weight': 2,      # in ounces
       'value': 15.00
     }
   ],
