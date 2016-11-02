@@ -36,6 +36,11 @@ for order in orders:
     print('Shipped %s' % getattr(order, 'ShippedTime', 'N/A'))
 
     transactions = order.TransactionArray.Transaction
+
+    tracking_num = (transactions[0].ShippingDetails.ShipmentTrackingDetails.
+      ShipmentTrackingNumber)
+    print('Tracking #:', tracking_num)
+
     for transaction in transactions:
         print('-', transaction.Item.Title)
     print('='*70)
