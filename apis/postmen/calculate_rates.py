@@ -7,6 +7,8 @@ https://www.postmen.com/courier/usps/rates/
 What values are allowed for box_type:
 https://docs.postmen.com/usps.html#parcel
 
+Weirdly, Postmen does not have a USPS first class mail rate for 15.9 oz.
+
 """
 import json
 import os
@@ -17,7 +19,7 @@ api_key, shipper_id = os.environ['POSTMEN_PARAMS'].split(';')
 region = 'sandbox'
 
 # In ounces
-weights = [1, 2, 3, 4, 5]
+weights = list(range(1, 16)) + [15.5]
 
 
 sender = dict(
@@ -81,9 +83,7 @@ def get_payload(weight):
             'depth': 0.2,
             'unit': 'in'
         },
-        items=[
-             item
-        ]
+        items=[item]
     )
 
     payload = dict(
