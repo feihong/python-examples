@@ -1,6 +1,8 @@
 """
 Get rates from ShipHawk API.
 
+Documentation: http://docs.shiphawk.com/docs/create-new-rate-request
+
 The rates seem identical to those for EasyPost.
 
 """
@@ -21,14 +23,16 @@ data = {
       'length': 6,      # in inches
       'width' : 7,
       'height': 1,
-      'weight': 2,      # in ounces
+      'weight': 17,      # in ounces
       'value': 15.00
     }
   ],
   'origin_address':{ 'zip': '93101'},
-  'destination_address':{ 'zip': '60060'}
+  'destination_address':{ 'zip': '60060'},
+  'display_rate_detail': True,
 }
 response = requests.post(url, json.dumps(data))
-# print(json.dumps(response.json(), indent=2))
+# with open('results.json', 'w') as fp:
+#     json.dump(response.json(), fp, indent=2)
 for rate in response.json()['rates']:
     print('{carrier} {service_level}: {price}'.format(**rate))
