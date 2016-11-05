@@ -4,5 +4,6 @@ ebaysdk
 foursquare
 plivo
 postmen
+shippo
 stamps.py
 yelp
