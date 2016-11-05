@@ -1,7 +1,12 @@
 """
-Get rates for 1 oz package using Shippo API.
+Print out a table of first class rates using Shippo API.
 
 Docs: https://goshippo.com/docs/reference
+
+Shippo's first class rates are on par with those of EasyPost, but they charge 5
+cents per label:
+
+https://goshippo.com/pricing/
 
 """
 import os
@@ -12,14 +17,7 @@ import shippo
 
 shippo.api_key = os.environ['SHIPPO_API_KEY']
 
-parcel = {
-    'length': 5,
-    'width': 5,
-    'height': 2,
-    'distance_unit': 'in',
-    'weight': 1,
-    'mass_unit': 'oz',
-}
+weights = list(range(1, 16)) + [15.9]
 
 address_from = {
     'object_purpose': 'QUOTE',
@@ -46,16 +44,23 @@ address_to = {
 }
 
 
-shipment = shippo.Shipment.create(
-    object_purpose='QUOTE',
-    address_from=address_from,
-    address_to=address_to,
-    parcel=parcel,
-    async=False,
-)
+for weight in weights:
+    parcel = {
+        'length': 5,
+        'width': 5,
+        'height': 2,
+        'distance_unit': 'in',
+        'weight': weight,
+        'mass_unit': 'oz',
+    }
 
-rates = shipment.rates_list
-rates.sort(key=lambda x: float(x.amount))
+    shipment = shippo.Shipment.create(
+        object_purpose='QUOTE',
+        address_from=address_from,
+        address_to=address_to,
+        parcel=parcel,
+        async=False,
+    )
 
-for rate in rates:
-    print('{} {}: {}'.format(rate.provider, rate.servicelevel_token, rate.amount))
+    rate = min(shipment.rates_list, key=lambda x: float(x.amount))
+    print('{} oz: {}'.format(weight, rate.amount))
