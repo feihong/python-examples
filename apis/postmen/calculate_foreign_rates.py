@@ -17,8 +17,7 @@ api_key, shipper_id = os.environ['POSTMEN_PARAMS'].split(';')
 region = 'sandbox'
 
 # In ounces
-# weights = [1, 2, 3, 4, 5]
-weights = [1]
+weights = range(1, 6)
 
 
 sender = dict(
@@ -103,12 +102,12 @@ for weight in weights:
     print('Weight: {} oz'.format(weight))
     try:
         payload = get_payload(weight)
-        with open('payload.json', 'w') as fp:
-            json.dump(payload, fp, indent=2)
+        # with open('payload.json', 'w') as fp:
+        #     json.dump(payload, fp, indent=2)
         api = Postmen(api_key, region)
         result = api.create('rates', payload)
-        with open('result.json', 'w') as fp:
-            json.dump(result, fp, indent=2)
+        # with open('result.json', 'w') as fp:
+        #     json.dump(result, fp, indent=2)
         for rate in result['rates']:
             print(rate['service_type'], rate['total_charge']['amount'])
         print('-'*75)
