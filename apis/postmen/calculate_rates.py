@@ -19,8 +19,8 @@ api_key, shipper_id = os.environ['POSTMEN_PARAMS'].split(';')
 region = 'sandbox'
 
 # In ounces
-weights = list(range(1, 16)) + [15.5]
-
+weights = list(range(1, 16)) + [15.9, 16]
+# weights = [15.9, 16]
 
 sender = dict(
     contact_name='Hugo Strongola',
