@@ -1,3 +1,9 @@
+"""
+To conver the resulting svg file to png, run:
+
+convert test.svg test.png
+
+"""
 from svgwrite import Drawing, rgb
 
 color1 = '#ff5722'
