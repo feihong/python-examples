@@ -15,6 +15,6 @@
   p Message of the day:
   p.message ${message}
 
-  button.btn.waves-effect.waves-light Click me!
+  button.btn.waves-effect Click me!
 
   p.result
