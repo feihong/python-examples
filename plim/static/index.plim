@@ -1,0 +1,20 @@
+-inherit base.plim
+
+-block title
+  Cool Beans
+
+-block extrahead
+  link rel='stylesheet' href='/static/styles.css'
+
+-block extrascript
+  script src='/static/main.js'
+
+.container
+  h1 = title()
+
+  p Message of the day:
+  p.message ${message}
+
+  button.btn.waves-effect.waves-light Click me!
+
+  p.result
