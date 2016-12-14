@@ -11,7 +11,9 @@ def calculate(start, mileage):
     print('Duration in days: {}'.format(duration.days))
     mileage = int(mileage)
     years = duration.days / 365.0
-    print('Mileage per year: {:0.2f}'.format(mileage / years))
+    mileage_per_year = mileage / years
+    print('Mileage per year: {:0.2f}'.format(mileage_per_year))    
+    print('Mileage per month: {:0.2f}'.format(mileage_per_year / 12))
 
 
 if __name__ == '__main__':
