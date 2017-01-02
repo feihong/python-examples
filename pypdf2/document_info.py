@@ -1,17 +1,20 @@
 import os
+from pathlib import Path
 from pprint import pprint
 from PyPDF2 import PdfFileReader
 
 
-def print_pdf_metadata(filename):
-    reader = PdfFileReader(open(filename, 'rb'))
+def print_pdf_metadata(path):
+    reader = PdfFileReader(path.open('rb'))
     pprint(reader.documentInfo)
 
 
 if __name__ == '__main__':
-    filenames = ['input.pdf', 'label.pdf', 'output.pdf']
-    for filename in os.listdir('.'):
-        if filename.endswith('.pdf'):
-            print(filename, '\n')
-            print_pdf_metadata(filename)
-            print('='*75)
+    files = Path('.').glob('*.pdf')
+    files = list(files)
+    files.append(Path(os.environ['PRIVATE_DATA']) / 'ebay/12-labels.pdf')
+
+    for path in files:
+        print(path, '\n')
+        print_pdf_metadata(path)
+        print('='*75)
