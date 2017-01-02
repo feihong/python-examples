@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from PyPDF2 import PdfFileWriter, PdfFileReader
 
-path = Path('../../private-data/ebay/labels.pdf')
+path = Path(os.env['PRIVATE_DATA']) / 'ebay/labels.pdf')
 input_pdf = PdfFileReader(path.open('rb'))
 
 for i in range(input_pdf.numPages):
