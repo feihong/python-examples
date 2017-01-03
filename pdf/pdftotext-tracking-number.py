@@ -1,10 +1,8 @@
 """
-Grab the tracking numbers content from a page that contains two domestic labels.
+Grab the tracking numbers content from a document that contains a mix of
+domestic and foreign labels.
 
 Note that if we just grab the text from the entire page, the text will be out of order because the labels are sideways.
-
-Running this script on the 7th page (containing the foreign label) won't grab
-any numbers at all.
 
 """
 import os
@@ -15,33 +13,41 @@ from PyPDF2 import PdfFileReader
 
 
 path = os.environ['PRIVATE_DATA'] + '/ebay/12-labels.pdf'
-page = sys.argv[1]
+
 
 TOP_BBOX = 140, 95, 30, 195
 BOTTOM_BBOX = 140, 495, 30, 195
+FOREIGN_BBOX = 265, 275, 250, 100
 
 
 def main():
-    for tn in get_tracking_numbers():
-        print(tn)
+    for page in range(1, 8):
+        out = '{}: {}'.format(page, get_tracking_numbers(page))
+        print(out)
 
 
-def get_tracking_numbers():
+def get_tracking_numbers(page):
     result = []
+
     for bbox in (TOP_BBOX, BOTTOM_BBOX):
-        text = get_tracking_number(bbox)
+        text = get_tracking_number(page, bbox)
         if re.match(r'\d{22}', text):
             result.append(text)
+
+    text = get_tracking_number(page, FOREIGN_BBOX)
+    if re.match(r'[A-Z]{2}\d{9}US', text):
+        result.append(text)
+
     return result
 
 
-
-def get_tracking_number(bbox):
-    result = get_text_for_bbox(*bbox)
+def get_tracking_number(page, bbox):
+    result = get_text_for_bbox(page, *bbox)
     return result.strip().replace(' ', '')
 
 
-def get_text_for_bbox(x, y, w, h):
+def get_text_for_bbox(page, x, y, w, h):
+    page = str(page)
     cmd = [
         'pdftotext',
         str(path),
