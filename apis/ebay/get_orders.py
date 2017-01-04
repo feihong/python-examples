@@ -41,7 +41,7 @@ def get_orders_for_page(page, start, end):
 
 
 if __name__ == '__main__':
-    start = arrow.get('2017-01-01')
+    start = arrow.get('2016-12-31')
     end = arrow.get('2017-01-02')
 
     print('Search range: {} to {}'.format(start, end))
