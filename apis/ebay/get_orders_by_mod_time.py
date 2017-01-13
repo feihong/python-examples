@@ -39,6 +39,30 @@ def get_orders_for_page(page, start, end):
     return response
 
 
+def get_tracking_numbers(order):
+    result = []
+    transactions = order['TransactionArray']['Transaction']
+    for transaction in transactions:
+        try:
+            tn = (transaction['ShippingDetails']['ShipmentTrackingDetails']
+                ['ShipmentTrackingNumber'])
+            result.append(tn)
+        except KeyError:
+            pass
+
+    return result
+
+
+def print_orders():
+    orders = json.load(open('orders.json'))
+    for order in orders:
+        print(order['ShippingAddress']['Name'])
+        mod_time = arrow.get(order['CheckoutStatus']['LastModifiedTime']).to('US/Central')
+        print(mod_time.format('YYYY-MM-DD hh:mm A'))
+        print(', '.join(get_tracking_numbers(order)))
+        print('='*75)
+
+
 if __name__ == '__main__':
     now = arrow.utcnow()
     start = now.replace(days=-1)
@@ -49,3 +73,5 @@ if __name__ == '__main__':
     print('Got {} orders'.format(len(orders)))
     with open('orders.json', 'w') as fp:
         json.dump(orders, fp, indent=2)
+
+    print_orders()
