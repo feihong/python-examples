@@ -1,4 +1,5 @@
 import arrow
+from nose.tools import eq_
 
 
 def test_six_months_ago():
@@ -13,7 +14,11 @@ def test_utf_offset():
     "Get the difference in hours between your local timezone and UTC."
     dt = arrow.now()
     hours_diff = dt.utcoffset().total_seconds() / 3600
-    assert hours_diff == -5.0
+
+    if dt.dst().total_seconds() == 0:
+        eq_(hours_diff, -6.0)
+    else:
+        eq_(hours_diff, -5.0)
 
 
 def test_get_datetime_for_day():
