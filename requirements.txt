@@ -1,5 +1,6 @@
 aiohttp
 arrow
+attr
 Fabric3
 Flask
 geopy
