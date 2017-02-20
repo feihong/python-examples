@@ -18,6 +18,7 @@ trading = Trading(config_file=None, **credentials)
 response = trading.execute('GetItem', {
     'ItemID': ITEM_ID,
     'DetailLevel': 'ReturnAll',
+    # 'DetailLevel': 'ItemReturnAttributes',  # to get UPC
 })
 item = response.dict()
 
