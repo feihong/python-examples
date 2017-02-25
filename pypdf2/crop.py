@@ -12,7 +12,8 @@ from PyPDF2 import PdfFileWriter, PdfFileReader
 
 def get_label_page():
     fp = open('label.pdf', 'rb')
-    reader = PdfFileReader(fp)
+    # Set strict to False because document may not have unique keys.
+    reader = PdfFileReader(fp, strict=False)
     page = reader.getPage(0)
     page.mediaBox.lowerLeft = (15, 10)
     page.mediaBox.upperRight = (273, 433)
