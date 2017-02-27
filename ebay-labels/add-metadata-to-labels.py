@@ -18,8 +18,8 @@ from PyPDF2 import PdfFileWriter, PdfFileReader
 
 path = os.environ['PRIVATE_DATA'] + '/ebay/12-labels.pdf'
 chunk = '12346789 '
-domestic = textwrap.fill(chunk * 12, 39)
-foreign = textwrap.fill(chunk * 18, 29)
+domestic = textwrap.fill(chunk * 6, 32)
+foreign = textwrap.fill(chunk * 10, 23)
 
 
 def main():
@@ -29,12 +29,12 @@ def main():
     # Write pages to output file.
     writer = writer = PdfFileWriter()
     for page in pages[:5]:
-        add_message(page, content=domestic, translate=(411, 325), rotate=180)
-        add_message(page, content=domestic, translate=(411, 722), rotate=180)
+        add_message(page, content=domestic, translate=(244, 316))
+        add_message(page, content=domestic, translate=(244, 713))
         writer.addPage(page)
 
     page6 = pages[5]
-    add_message(page6, content=domestic, translate=(411, 325), rotate=180)
+    add_message(page6, content=domestic, translate=(244, 316))
     writer.addPage(page6)
 
     page7 = pages[6]
@@ -57,7 +57,7 @@ def add_message(page, content, translate, rotate=0):
         c.rotate(rotate)
 
     t = c.beginText()
-    t.setFont('Courier', 8)
+    t.setFont('Courier', 10)
     t.setTextOrigin(0, 0)
     t.textLines(content)
     c.drawText(t)
