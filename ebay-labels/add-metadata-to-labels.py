@@ -20,7 +20,8 @@ path = os.environ['PRIVATE_DATA'] + '/ebay/12-labels.pdf'
 chunk = '12346789 '
 domestic = textwrap.fill(chunk * 6, 32)
 foreign = textwrap.fill(chunk * 10, 23)
-
+domestic_notes = textwrap.fill(chunk * 24, 73)
+foreign_notes = textwrap.fill(chunk * 24, 79)
 
 def main():
     reader = PdfFileReader(open(path, 'rb'))
@@ -30,7 +31,9 @@ def main():
     writer = writer = PdfFileWriter()
     for page in pages[:5]:
         add_message(page, content=domestic, translate=(244, 316))
+        add_message(page, content=domestic_notes, translate=(100, 347))
         add_message(page, content=domestic, translate=(244, 713))
+        add_message(page, content=domestic_notes, translate=(100, 425))
         writer.addPage(page)
 
     page6 = pages[5]
@@ -39,6 +42,7 @@ def main():
 
     page7 = pages[6]
     add_message(page7, content=foreign, translate=(537, 143), rotate=-90)
+    add_message(page7, content=foreign_notes, translate=(75, 645))
     writer.addPage(page7)
 
     with open('output.pdf', 'wb') as fp:
