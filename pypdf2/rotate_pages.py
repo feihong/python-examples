@@ -3,6 +3,7 @@ from PyPDF2 import PdfFileWriter, PdfFileReader
 
 
 input_path = os.environ['PRIVATE_DATA'] + '/ebay/bulk-mixed.pdf'
+input_path = '../../private-data/ebay/bulk-mixed.pdf'
 reader = PdfFileReader(open(input_path, 'rb'))
 pages = (reader.getPage(i) for i in range(reader.numPages))
 
