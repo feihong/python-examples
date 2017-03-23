@@ -22,6 +22,10 @@ def print_headers(*args):
     output = zipl(args, column_widths)
     puts(columns(*output))
 
+    lines = ['='*len(s) for s in args]
+    lines = zipl(lines, column_widths)
+    puts(columns(*lines))
+
 
 def print_row(month, total, rent):
     values = [
